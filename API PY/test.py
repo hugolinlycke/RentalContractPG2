@@ -58,15 +58,16 @@ def login():
     to_filter = "Username = '" + username + "' AND " + "Password = '" + password + "'"
     cur = conn.cursor()
     results = []
-    results = cur.execute('SELECT Username, Password FROM [ApartmentRentalDB].[dbo].[User] WHERE ' + to_filter).fetchall()
+    results = cur.execute('SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE ' + to_filter).fetchall()
 
     if len(results) == 1:
         for row in results:
             if row.Username == username and row.Password == password:
-                response = []
-                response.append(
-                    {"Username": row.Username,
-                    "Password": row.Password}
+                response = (
+                    {"Id": row.Id,
+                    "Username": row.Username,
+                    "Password": row.Password,
+                    "Landlord": row.Landlord}
                 )
 
                 return jsonify(response)
