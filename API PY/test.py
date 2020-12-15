@@ -18,7 +18,7 @@ def home():
     return "<h1>snopp</h1>"
 
 #GET ALL USERS
-@app.route('/api/user', methods=['GET'])
+@app.route('/api/users', methods=['GET'])
 def users():
     cur = conn.cursor()
     results = []
