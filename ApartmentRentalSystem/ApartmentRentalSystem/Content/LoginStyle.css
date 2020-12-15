@@ -8,7 +8,9 @@ p.imageLogin {
     position: absolute;
     
 }
-div.formboxLogin{
-    left:300px;
+#formboxLogin{
+    left:800px;
+    top:300px;
+    position: relative;
 }
 
