@@ -1,0 +1,11 @@
+﻿body {
+}
+p.imageLogin {
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background-color: blue;
+    position: absolute;
+    
+}
+
