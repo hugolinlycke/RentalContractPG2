@@ -1,0 +1,16 @@
+﻿body {
+}
+p.imageLogin {
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background-color: blue;
+    position: absolute;
+    
+}
+#formboxLogin{
+    left:800px;
+    top:300px;
+    position: relative;
+}
+

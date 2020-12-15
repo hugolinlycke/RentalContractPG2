@@ -1,0 +1,23 @@
+﻿@model ApartmentRentalSystem.Models.User
+@{
+    ViewBag.Title = "Index";
+}
+
+<header>
+    <link href="~/Content/LoginStyle.css" rel="stylesheet" />
+</header>
+<body>
+    <p class="imageLogin"></p>
+
+    <div id="formboxLogin">
+        @using (Html.BeginForm())
+        {
+            <div>Username</div>
+            <div>@Html.TextBoxFor(m => m.Username)</div>
+            <div>Password</div>
+            <div>@Html.TextBoxFor(m => m.Password)</div>
+            <input type="submit" value="Loggin" />
+        }
+    </div>
+</body>
+
