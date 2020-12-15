@@ -77,3 +77,5 @@ C:\Users\Admin\Documents\GitHub\RentalContractPG2\ApartmentRentalSystem\Apartmen
 C:\Users\Admin\Documents\GitHub\RentalContractPG2\ApartmentRentalSystem\ApartmentRentalSystem\obj\Debug\ApartmentRentalSystem.csproj.CopyComplete
 C:\Users\Admin\Documents\GitHub\RentalContractPG2\ApartmentRentalSystem\ApartmentRentalSystem\obj\Debug\ApartmentRentalSystem.dll
 C:\Users\Admin\Documents\GitHub\RentalContractPG2\ApartmentRentalSystem\ApartmentRentalSystem\obj\Debug\ApartmentRentalSystem.pdb
+C:\Users\Admin\Documents\GitHub\RentalContractPG2\ApartmentRentalSystem\ApartmentRentalSystem\bin\System.Net.Http.Formatting.dll
+C:\Users\Admin\Documents\GitHub\RentalContractPG2\ApartmentRentalSystem\ApartmentRentalSystem\bin\System.Net.Http.Formatting.xml
