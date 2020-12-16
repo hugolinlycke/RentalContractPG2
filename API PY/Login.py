@@ -76,7 +76,16 @@ def create_user():
         else:
             cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[User] (Username, Password, Landlord) VALUES ('"+username + "','" + password + "'," + landlord +");")
             conn.commit()
-            return "<h1>Bra jobbat</h1>"
+            results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Username = '" + username + "';").fetchall()
+            if len(results1) > 0:
+                for user in results1:
+                    response = (
+                        {'Id': user.Id,
+                        'Username': user.Username,
+                        'Password': user.Password,
+                        'Landlord': user.Landlord}
+                    )
+            return jsonify(response)
         
     else:
         return error_page(418, 'Username, password and landlord needs to be set')
