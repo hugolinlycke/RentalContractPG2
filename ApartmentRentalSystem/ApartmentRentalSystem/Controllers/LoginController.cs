@@ -62,7 +62,7 @@ namespace ApartmentRentalSystem.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateAccount(User inloggning)
         {
-            string URL = BASE_URL + "/api/create/user/" + inloggning.Id;
+            string URL = BASE_URL + "api/create/user";
             HttpClient http = new HttpClient();
             HttpResponseMessage response = await http.GetAsync(new Uri(URL));
 
