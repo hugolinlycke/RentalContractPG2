@@ -64,15 +64,13 @@ namespace ApartmentRentalSystem.Controllers
         {
             string URL = BASE_URL + "/api/create/user/" + inloggning.Id;
             HttpClient http = new HttpClient();
-            HttpResponseMessage response = await http.GetAsync(new Uri(URL));
+            
+            string jsonString = JsonConvert.SerializeObject(inloggning);
+            var newContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+            var newResponse = await http.PostAsync(URL, newContent);
 
-            if (response.IsSuccessStatusCode)
+            if (newResponse.IsSuccessStatusCode)
             {
-
-                string jsonString = JsonConvert.SerializeObject(inloggning);
-                var newContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
-                var newResponse = await http.PostAsync(URL, newContent);
-
                 if (newResponse != null)
                 {
                     return RedirectToAction("Index");
@@ -81,16 +79,11 @@ namespace ApartmentRentalSystem.Controllers
                 {
                     Console.WriteLine("Account already with that information");
                 }
-                
-                
-
-                
-
             }
             else
             {
-                //CRITICAL SERVER FAIL
-                Console.WriteLine("failed asd");
+                //CRITICAL SERVER FAIL,  MAKE A POP UP
+                Console.WriteLine("failed Server Connection");
             }
              return View();
         }
