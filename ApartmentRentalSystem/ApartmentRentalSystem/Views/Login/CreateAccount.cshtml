@@ -12,7 +12,7 @@
     .picture {
         margin: 5px;
     }
-    
+
     .imageLogin {
         left: 0;
         width: 50%;
@@ -20,16 +20,24 @@
         background-color: blue;
         position: absolute;
     }
+
     #formboxLogin {
         left: 800px;
         top: 300px;
         position: relative;
     }
+
     #LoginText {
-        top:200px;
-        left:850px;
+        top: 200px;
+        left: 850px;
         position: relative;
-        font-weight:bold;
+        font-weight: bold;
+    }
+    #CreateAccountText {
+        top: 200px;
+        left: 780px;
+        position: relative;
+        font-weight: bold;
     }
 </style>
 
@@ -39,7 +47,7 @@
 <body>
     <img class="imageLogin" src="~/Image/mono-gatvy.jpg" />
 
-    <h2 id="LoginText">Login</h2>
+    <h2 id="CreateAccountText">Create Account</h2>
 
     <div id="formboxLogin">
         @using (Html.BeginForm())
@@ -48,13 +56,11 @@
             <div>@Html.TextBoxFor(m => m.Username)</div>
             <div>Password</div>
             <div>@Html.TextBoxFor(m => m.Password)</div>
-            <input type="submit" value="Loggin" />
-
-            <input type="button" id="CreateAccountButton" value="Create Account" onclick="window.location='@Url.Action("CreateAccount", "Login")'" />
+            <input type="submit" value="Create" />
         }
-        
+
     </div>
-    
+
 
     <div id="icons">
         <img class="picture" src="~/Image/facebook.png" width="40px">
@@ -62,6 +68,6 @@
         <img class="picture" src="~/Image/youtube.png" width="40px">
         <img class="picture" src="~/Image/twitter.png" width="40px">
     </div>
-    
+
 </body>
 

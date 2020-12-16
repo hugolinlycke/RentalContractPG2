@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -33,8 +34,11 @@ namespace ApartmentRentalSystem.Controllers
 
                 if (activeUser.Username != null || activeUser.Password != null)
                 {
-                    //LOGGED IN
-                    
+                    return RedirectToAction("Index", "Main", inloggning);
+
+
+                    //Remove "Login" Text from nav bar then add profile button, if possible
+
                 }
                 else
                 {
@@ -51,5 +55,44 @@ namespace ApartmentRentalSystem.Controllers
             // Here functionall Code. What will happen when we get answers.
             return View();
         }
-    }
+        public ActionResult CreateAccount() 
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<ActionResult> CreateAccount(User inloggning)
+        {
+            string URL = BASE_URL + "/api/create/user/" + inloggning.Id;
+            HttpClient http = new HttpClient();
+            HttpResponseMessage response = await http.GetAsync(new Uri(URL));
+
+            if (response.IsSuccessStatusCode)
+            {
+
+                string jsonString = JsonConvert.SerializeObject(inloggning);
+                var newContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+                var newResponse = await http.PostAsync(URL, newContent);
+
+                if (newResponse != null)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    Console.WriteLine("Account already with that information");
+                }
+                
+                
+
+                
+
+            }
+            else
+            {
+                //CRITICAL SERVER FAIL
+                Console.WriteLine("failed asd");
+            }
+             return View();
+        }
+        }
 }

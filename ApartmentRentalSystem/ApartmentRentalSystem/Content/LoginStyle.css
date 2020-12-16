@@ -1,6 +1,4 @@
-﻿body {
-}
-p.imageLogin {
+﻿.imageLogin {
     left: 0;
     width: 50%;
     height: 100%;
@@ -13,4 +11,3 @@ p.imageLogin {
     top:300px;
     position: relative;
 }
-
