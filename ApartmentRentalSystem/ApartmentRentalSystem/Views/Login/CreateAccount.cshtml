@@ -56,18 +56,29 @@
             <div>@Html.TextBoxFor(m => m.Username)</div>
             <div>Password</div>
             <div>@Html.TextBoxFor(m => m.Password)</div>
-            <div>@Html.TextBoxFor(m => m.Landlord)</div>
+
+            <div>Landlord? @Html.CheckBoxFor(m => m.Landlord)</div>
+
             <input type="submit" value="Create" />
         }
+        @if (ViewBag.Message != null)
+        {
+            <script type="text/javascript">
 
+            window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+            </script>
+
+        }
     </div>
 
 
     <div id="icons">
-        <img class="picture" src="~/Image/facebook.png" width="40px">
-        <img class="picture" src="~/Image/instagram.png" width="40px">
-        <img class="picture" src="~/Image/youtube.png" width="40px">
-        <img class="picture" src="~/Image/twitter.png" width="40px">
+        <a rel="nofollow" target="_blank" href="http://www.facebook.com"><img class="picture" src="~/Image/facebook.png" width="40px"></a>
+        <a rel="nofollow" target="_blank" href="http://www.instagram.com"><img class="picture" src="~/Image/instagram.png" width="40px"></a>
+        <a rel="nofollow" target="_blank" href="http://www.youtube.com"><img class="picture" src="~/Image/youtube.png" width="40px"></a>
+        <a rel="nofollow" target="_blank" href="http://www.twitter.com"><img class="picture" src="~/Image/twitter.png" width="40px"></a>
     </div>
 
 </body>

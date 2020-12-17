@@ -14,6 +14,7 @@ namespace ApartmentRentalSystem.Controllers
     public class LoginController : Controller
     {
         private string BASE_URL = "http://127.0.0.1:5000/";
+
         public ActionResult Index()
         {
             return View();
@@ -79,19 +80,24 @@ namespace ApartmentRentalSystem.Controllers
             {
                 if (newResponse != null)
                 {
+                    ViewBag.Message = String.Format("You successfully created an account!", DateTime.Now.ToString()); // DOESNT WORK
                     return RedirectToAction("Index");
+                }
+            }
+            else if (!newResponse.IsSuccessStatusCode)
+            {
+                if (newResponse.StatusCode.ToString() == "NotFound")
+                {
+                    ViewBag.Message = String.Format("You could not connect to the API, Please try again", DateTime.Now.ToString());
+                    return View();
                 }
                 else
                 {
-                    Console.WriteLine("Account already with that information");
+                    ViewBag.Message = String.Format("There is already an account with that username or password", DateTime.Now.ToString());
+                    return View();
                 }
             }
-            else
-            {
-                //CRITICAL SERVER FAIL,  MAKE A POP UP
-                Console.WriteLine("failed Server Connection");
-            }
-             return View();
+            return View();
         }
 
     }
