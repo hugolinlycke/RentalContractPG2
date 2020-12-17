@@ -59,18 +59,10 @@ def fetch_one_user(id):
 @app.route('/api/create/user', methods=['POST'])
 def create_user():
 
-    print(request.json['Username'])
-    print(request.json['Landlord'])
-    print(request.json['Password'])
-
-    if request.json['Username'] and request.json['Landlord'] and request.json['Password']:
+    if request.json['Username'] != None and request.json['Landlord'] != None and request.json['Password'] != None:
         username = request.json['Username']
         password = request.json['Password']
         landlord = request.json['Landlord']
-
-        print(request.json['Username'])
-        print(request.json['Landlord'])
-        print(request.json['Password'])
 
         cur = conn.cursor()
 
@@ -82,7 +74,7 @@ def create_user():
             if results[0].Username == username:
                 return error_page(418, 'Cannot be the same username')
         else:
-            cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[User] (Username, Password, Landlord) VALUES ('"+username + "','" + password + "'," + landlord +");")
+            cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[User] (Username, Password, Landlord) VALUES ('"+username + "','" + password + "','" + str(landlord) +"');")
             conn.commit()
             results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Username = '" + username + "';").fetchall()
             if len(results1) > 0:
