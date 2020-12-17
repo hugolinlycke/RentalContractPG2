@@ -59,7 +59,7 @@ def fetch_one_user(id):
 @app.route('/api/create/user', methods=['POST'])
 def create_user():
 
-    if request.json['Username'] and request.json['Landlord'] and request.json['Password']:
+    if request.json['Username'] != None and request.json['Landlord'] != None and request.json['Password'] != None:
         username = request.json['Username']
         password = request.json['Password']
         landlord = request.json['Landlord']
@@ -74,7 +74,7 @@ def create_user():
             if results[0].Username == username:
                 return error_page(418, 'Cannot be the same username')
         else:
-            cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[User] (Username, Password, Landlord) VALUES ('"+username + "','" + password + "'," + landlord +");")
+            cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[User] (Username, Password, Landlord) VALUES ('"+username + "','" + password + "','" + str(landlord) +"');")
             conn.commit()
             results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Username = '" + username + "';").fetchall()
             if len(results1) > 0:
@@ -114,7 +114,19 @@ def deleteuser(Id):
 
     cur = conn.cursor()
 
-    #Need to remove from point, offer, etc.
+    userInPointTable = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Point] WHERE UserId =" + Id)
+    userInInterestTable = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Interest] WHERE UserId =" + Id)
+    userInOfferTable = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[RentalOffer] WHERE UserId =" + Id)
+
+    if len(userInPointTable) > 0:
+        cur.execute('DELETE FROM [ApartmentRentalDB].[dbo].[Point] WHERE UserId = ' + Id)
+    
+    if len(userInInterestTable) > 0:
+        cur.execute('DELETE FROM [ApartmentRentalDB].[dbo].[Interest] WHERE UserId = ' + Id)
+    
+    if len(userInOfferTable) > 0:
+        cur.execute('DELETE FROM [ApartmentRentalDB].[dbo].[RentalOffer] WHERE UserId = ' + Id)
+
 
     cur.execute('DELETE FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = ' + Id)
     conn.commit()
