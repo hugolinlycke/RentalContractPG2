@@ -40,18 +40,24 @@ namespace ApartmentRentalSystem.Controllers
                     //Remove "Login" Text from nav bar then add profile button, if possible
 
                 }
-                else
-                {
-                    ViewBag.Message = String.Format("Wrong information, Please try again", DateTime.Now.ToString());
-                    return View();
-                }
 
             }
-            else
+            else if (!response.IsSuccessStatusCode)
             {
-                //CRITICAL SERVER FAIL
-                Console.WriteLine("failed asd");
+                if (response.StatusCode.ToString() == "NotFound")
+                {
+                    ViewBag.Message = String.Format("You could not connect to the API, Please try again later", DateTime.Now.ToString());
+                    return View();
+                }
+                else
+                {
+                    ViewBag.Message = String.Format("You have entered wrong user credentials, Please try again", DateTime.Now.ToString());
+                    return View();
+                }
+                
             }
+            
+
             // Here functionall Code. What will happen when we get answers.
             return View();
         }
