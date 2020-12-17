@@ -87,5 +87,7 @@ namespace ApartmentRentalSystem.Controllers
             }
              return View();
         }
-        }
+
+    }
+
 }
