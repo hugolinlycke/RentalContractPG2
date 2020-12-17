@@ -59,10 +59,10 @@ def fetch_one_user(id):
 @app.route('/api/create/user', methods=['POST'])
 def create_user():
 
-    if request.form['Username'] and request.form['Landlord'] and request.form['Password']:
-        username = request.form['Username']
-        password = request.form['Password']
-        landlord = request.form['Landlord']
+    if request.json['Username'] and request.json['Landlord'] and request.json['Password']:
+        username = request.json['Username']
+        password = request.json['Password']
+        landlord = request.json['Landlord']
 
         cur = conn.cursor()
 
@@ -113,6 +113,8 @@ def updateuser():
 def deleteuser(Id):
 
     cur = conn.cursor()
+
+    #Need to remove from point, offer, etc.
 
     cur.execute('DELETE FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = ' + Id)
     conn.commit()
