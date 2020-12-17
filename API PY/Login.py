@@ -59,10 +59,18 @@ def fetch_one_user(id):
 @app.route('/api/create/user', methods=['POST'])
 def create_user():
 
+    print(request.json['Username'])
+    print(request.json['Landlord'])
+    print(request.json['Password'])
+
     if request.json['Username'] and request.json['Landlord'] and request.json['Password']:
         username = request.json['Username']
         password = request.json['Password']
         landlord = request.json['Landlord']
+
+        print(request.json['Username'])
+        print(request.json['Landlord'])
+        print(request.json['Password'])
 
         cur = conn.cursor()
 
