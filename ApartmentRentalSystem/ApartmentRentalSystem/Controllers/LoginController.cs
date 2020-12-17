@@ -42,8 +42,8 @@ namespace ApartmentRentalSystem.Controllers
                 }
                 else
                 {
-                    //LOGGED IN FAILED
-
+                    ViewBag.Message = String.Format("Wrong information, Please try again", DateTime.Now.ToString());
+                    return View();
                 }
 
             }
