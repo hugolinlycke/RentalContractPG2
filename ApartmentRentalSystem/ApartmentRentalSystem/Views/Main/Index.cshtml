@@ -22,9 +22,10 @@
         }
 
         #mainScreenTop {
+            position:relative;
             width: 100%;
-            
             margin: 0;
+            background-color:rebeccapurple;
         }
 
         .mainScreenTopField {
@@ -37,47 +38,119 @@
 
         .mainScreenTopField:last-child {
                 margin-right: 0;
-         }
+        }
+        .mainpage2{
+            position:relative;
+
+            width:100px;
+            height:50px;
+            background-color: black;
+        }
+        .searchbar{
+
+        }
+        .listbar{
+
+        }
+        .dropbtn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+        }
+
+        .dropdown-content a:hover {
+                    background-color: #f1f1f1
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: #3e8e41;
+        }
+       
+        
     </style>
     <meta charset="ascii">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Titel der Seite | Name der Website</title>
 </head>
-<body style="background-color:lightblue; margin:0px;">
+<body style=" margin:0px; background-color:lightblue; border-bottom:solid">
     <!-- Sichtbarer Dokumentinhalt im body -->
 
+    <div class="Parent">
+        <div id="mainScreenTop ">
+            <div class="mainScreenTopField">
+                <img class="picture" src="~/Image/Company.jpg">
+                <p style="color:black; ">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam enim erat, elementum a dolor nec, auctor porta augue.
+                    Sed lobortis laoreet mauris, eu pretium purus laoreet eget. Curabitur justo enim, egestas eleifend malesuada vitae, suscipit
+                    ultricies mauris. In volutpat urna non arcu dapibus lacinia. Nam sit amet lectus sed elit viverra molestie.
+                </p>
+            </div>
 
-    <div id="mainScreenTop">
-        <div class="mainScreenTopField">
-            <img class="picture" src="~/Image/Company.jpg" >
-            <p style="color:black; ">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam enim erat, elementum a dolor nec, auctor porta augue.
-                Sed lobortis laoreet mauris, eu pretium purus laoreet eget. Curabitur justo enim, egestas eleifend malesuada vitae, suscipit
-                ultricies mauris. In volutpat urna non arcu dapibus lacinia. Nam sit amet lectus sed elit viverra molestie.
-            </p>
+
+            <div class="mainScreenTopField">
+                <img class="picture" src="~/Image/Apartments.jpg">
+                <p style="color:black;">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam enim erat, elementum a dolor nec, auctor porta augue.
+                    Sed lobortis laoreet mauris, eu pretium purus laoreet eget. Curabitur justo enim, egestas eleifend malesuada vitae, suscipit
+                    ultricies mauris. In volutpat urna non arcu dapibus lacinia. Nam sit amet lectus sed elit viverra molestie.
+                </p>
+            </div>
+
+
+            <div class="mainScreenTopField">
+                <img class="picture" src="~/Image/Landlord.jpeg">
+                <p style="color:black;">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam enim erat, elementum a dolor nec, auctor porta augue.
+                    Sed lobortis laoreet mauris, eu pretium purus laoreet eget. Curabitur justo enim, egestas eleifend malesuada vitae, suscipit
+                    ultricies mauris. In volutpat urna non arcu dapibus lacinia. Nam sit amet lectus sed elit viverra molestie.
+                </p>
+            </div>
         </div>
 
+        <div class="mainpage2">
+            <div class="searchbar">
+                <div class="dropdown">
+                    <button class="dropbtn">Dropdown</button>
+                    <div class="dropdown-content">
+                        <a href="#">Link 1</a>
+                        <a href="#">Link 2</a>
+                        <a href="#">Link 3</a>
+                    </div>
+                </div>
 
-        <div class="mainScreenTopField">
-            <img class="picture" src="~/Image/Apartments.jpg" >
-            <p style="color:black;">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam enim erat, elementum a dolor nec, auctor porta augue.
-                Sed lobortis laoreet mauris, eu pretium purus laoreet eget. Curabitur justo enim, egestas eleifend malesuada vitae, suscipit
-                ultricies mauris. In volutpat urna non arcu dapibus lacinia. Nam sit amet lectus sed elit viverra molestie.
-            </p>
+            </div>
+            <div class="listbar"></div>
         </div>
-
-
-        <div class="mainScreenTopField">
-            <img class="picture" src="~/Image/Landlord.jpeg">
-            <p style="color:black;">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam enim erat, elementum a dolor nec, auctor porta augue.
-                Sed lobortis laoreet mauris, eu pretium purus laoreet eget. Curabitur justo enim, egestas eleifend malesuada vitae, suscipit
-                ultricies mauris. In volutpat urna non arcu dapibus lacinia. Nam sit amet lectus sed elit viverra molestie.
-            </p>
-        </div>
-
     </div>
+
 
 
 </body>
