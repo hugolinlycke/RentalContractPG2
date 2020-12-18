@@ -175,8 +175,11 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\LoginStyle.css" />
+    <Content Include="Image\Apartments.jpg" />
+    <Content Include="Image\Company.jpg" />
     <Content Include="Image\facebook.png" />
     <Content Include="Image\instagram.png" />
+    <Content Include="Image\Landlord.jpeg" />
     <Content Include="Image\mono-gatvy.jpg" />
     <Content Include="Image\twitter.png" />
     <Content Include="Image\youtube.png" />
