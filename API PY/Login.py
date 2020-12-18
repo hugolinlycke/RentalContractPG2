@@ -59,10 +59,10 @@ def fetch_one_user(id):
 @app.route('/api/create/user', methods=['POST'])
 def create_user():
 
-    if request.json['Username'] != None and request.json['Landlord'] != None and request.json['Password'] != None:
-        username = request.json['Username']
-        password = request.json['Password']
-        landlord = request.json['Landlord']
+    if request.get_json(force=True)['Username'] != None and request.get_json(force=True)['Landlord'] != None and request.get_json(force=True)['Password'] != None:
+        username = request.get_json(force=True)['Username']
+        password = request.get_json(force=True)['Password']
+        landlord = request.get_json(force=True)['Landlord']
 
         cur = conn.cursor()
 
@@ -94,17 +94,28 @@ def create_user():
 @app.route('/api/update/user', methods=['PUT'])
 def updateuser():
 
-    if request.json['Id'] != None and request.json['Username'] != None and request.json['Password'] != None:
-        userId = request.json['Id']
-        username = request.json['Username']
-        password = request.json['Password']
+    if request.get_json(force=True)['Id'] != None and request.get_json(force=True)['Username'] != None and request.get_json(force=True)['Password'] != None:
+        userId = request.get_json(force=True)['Id']
+        username = request.get_json(force=True)['Username']
+        password = request.get_json(force=True)['Password']
         
 
         cur = conn.cursor()
 
         cur.execute("UPDATE [ApartmentRentalDB].[dbo].[User] SET Username= '" + username + "'," + " Password= '" + password + "' WHERE Id= " + userId)
         conn.commit()
-        return "<h1>Well shaken mojito!</h1>"
+
+        results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id= " + userId)
+        
+        if len(results) > 0:
+                for user in results:
+                    response = (
+                        {'Id': user.Id,
+                        'Username': user.Username,
+                        'Password': user.Password,
+                        'Landlord': user.Landlord}
+                    )
+                return jsonify(response)
 
     else:
         return error_page(418, "Not all fields are filled out buddy")
