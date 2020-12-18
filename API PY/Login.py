@@ -15,7 +15,7 @@ conn = pyodbc.connect(
 @app.route('/', methods=['GET'])
 def home():
         
-    return "<h1>snopp</h1>"
+    return "<h1>Main page</h1>"
 
 #GET ALL USERS
 @app.route('/api/read/user', methods=['GET'])
@@ -94,10 +94,10 @@ def create_user():
 @app.route('/api/update/user', methods=['PUT'])
 def updateuser():
 
-    if request.form['Id'] and request.form['Username'] and request.form['Password']:
-        userId = request.form['Id']
-        username = request.form['Username']
-        password = request.form['Password']
+    if request.json['Id'] != None and request.json['Username'] != None and request.json['Password'] != None:
+        userId = request.json['Id']
+        username = request.json['Username']
+        password = request.json['Password']
         
 
         cur = conn.cursor()
