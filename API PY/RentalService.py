@@ -205,4 +205,30 @@ def login():
 
     return error_page(418, "Username and password does not match")
 
+
+
+
+    #END OF LOGIN
+    #NEW SERVICE
+
+    #metoder ATT GÖRA
+    #CRUD för apartment
+    #Get specific apartment from apartment ID
+    #Get specific apartment from landlord ID
+    
+    #CRUD för interest list
+    #Get specific interest list from apartmentId
+
+    #CRUD för rental offer
+    #Get specific rental offer with userID
+    #Get sepcific rental offer with landlordId
+
+    #CRUD för point
+    #Get specific point from userId
+
+    #Funktion för att poäng skall uppdateras automatisk efter en viss tid
+    #Filter funktion sortera efter price (range ex 300-2000), location och size
+    
+    #Show similar apartment when clicked an apartment (restrictions -> what restrictions?)
+
 app.run()
