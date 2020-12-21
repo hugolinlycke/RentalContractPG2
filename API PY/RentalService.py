@@ -159,9 +159,6 @@ def deleteuser(Id):
     else:
         return error_page(418, "User not found")
 
-
-
-
 @app.errorhandler(404)
 def page_not_found(e):
     return  "<h1>404</h1><p>The resource could not be found.</p>", 404
@@ -218,6 +215,7 @@ def login():
     
     #CRUD för interest list
     #Get specific interest list from apartmentId
+    #Get specific interest list from userid
 
     #CRUD för rental offer
     #Get specific rental offer with userID
@@ -229,6 +227,6 @@ def login():
     #Funktion för att poäng skall uppdateras automatisk efter en viss tid
     #Filter funktion sortera efter price (range ex 300-2000), location och size
     
-    #Show similar apartment when clicked an apartment (restrictions -> what restrictions?)
+    #Show similar apartment when clicked an apartment (restrictions -> location)
 
 app.run()
