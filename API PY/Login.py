@@ -59,10 +59,10 @@ def fetch_one_user(id):
 @app.route('/api/create/user', methods=['POST'])
 def create_user():
 
-    if request.json['Username'] != None and request.json['Landlord'] != None and request.json['Password'] != None:
-        username = request.json['Username']
-        password = request.json['Password']
-        landlord = request.json['Landlord']
+    if request.get_json(force=True)['Username'] != None and request.get_json(force=True)['Landlord'] != None and request.get_json(force=True)['Password'] != None:
+        username = request.get_json(force=True)['Username']
+        password = request.get_json(force=True)['Password']
+        landlord = request.get_json(force=True)['Landlord']
 
         cur = conn.cursor()
 
@@ -93,18 +93,40 @@ def create_user():
 #UPDATE FUNCTION, not able to change landlord status. Only able to do that in creation
 @app.route('/api/update/user', methods=['PUT'])
 def updateuser():
+    
+    try: request.json['Id']
+    except KeyError: return error_page(418, "Id not set")
 
-    if request.json['Id'] != None and request.json['Username'] != None and request.json['Password'] != None:
-        userId = request.json['Id']
-        username = request.json['Username']
-        password = request.json['Password']
-        
+    try: request.json['Username']
+    except KeyError: return error_page(418, "Username not set")
 
+    try: request.json['Password']
+    except KeyError: return error_page(418, "Password not set")
+
+    if request.get_json(force=True)['Id'] != None and request.get_json(force=True)['Username'] != None and request.get_json(force=True)['Password'] != None:
+        userId = request.get_json(force=True)['Id']
+        username = request.get_json(force=True)['Username']
+        password = request.get_json(force=True)['Password']
+            
         cur = conn.cursor()
 
-        cur.execute("UPDATE [ApartmentRentalDB].[dbo].[User] SET Username= '" + username + "'," + " Password= '" + password + "' WHERE Id= " + userId)
-        conn.commit()
-        return "<h1>Well shaken mojito!</h1>"
+        results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id= " + userId).fetchall()
+
+
+        if len(results) > 0:
+            cur.execute("UPDATE [ApartmentRentalDB].[dbo].[User] SET Username= '" + username + "'," + " Password= '" + password + "' WHERE Id= " + userId)
+            conn.commit()
+            results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id= " + userId).fetchall()
+            for user in results1:
+                response = (
+                    {'Id': user.Id,
+                    'Username': user.Username,
+                    'Password': user.Password,
+                    'Landlord': user.Landlord}
+                )
+            return jsonify(response)
+        else:
+            return error_page(418, "Could not find user")
 
     else:
         return error_page(418, "Not all fields are filled out buddy")
@@ -114,23 +136,29 @@ def deleteuser(Id):
 
     cur = conn.cursor()
 
-    userInPointTable = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Point] WHERE UserId =" + Id)
-    userInInterestTable = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Interest] WHERE UserId =" + Id)
-    userInOfferTable = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[RentalOffer] WHERE UserId =" + Id)
+    results1 = cur.execute('SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id =' + Id).fetchall()
 
-    if len(userInPointTable) > 0:
-        cur.execute('DELETE FROM [ApartmentRentalDB].[dbo].[Point] WHERE UserId = ' + Id)
-    
-    if len(userInInterestTable) > 0:
-        cur.execute('DELETE FROM [ApartmentRentalDB].[dbo].[Interest] WHERE UserId = ' + Id)
-    
-    if len(userInOfferTable) > 0:
-        cur.execute('DELETE FROM [ApartmentRentalDB].[dbo].[RentalOffer] WHERE UserId = ' + Id)
+    if len(results1) > 0:
+        userInPointTable = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Point] WHERE UserId =" + Id).fetchall()
+        userInInterestTable = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Interest] WHERE UserId =" + Id).fetchall()
+        userInOfferTable = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[RentalOffer] WHERE UserId =" + Id).fetchall()
+
+        if len(userInPointTable) > 0:
+            cur.execute('DELETE FROM [ApartmentRentalDB].[dbo].[Point] WHERE UserId = ' + Id)
+        
+        if len(userInInterestTable) > 0:
+            cur.execute('DELETE FROM [ApartmentRentalDB].[dbo].[Interest] WHERE UserId = ' + Id)
+        
+        if len(userInOfferTable) > 0:
+            cur.execute('DELETE FROM [ApartmentRentalDB].[dbo].[RentalOffer] WHERE UserId = ' + Id)
 
 
-    cur.execute('DELETE FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = ' + Id)
-    conn.commit()
-    return "<h1>Deleted! wow!</h1>"
+        cur.execute('DELETE FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = ' + Id)
+        conn.commit()
+        return "<h1>Deleted! wow!</h1>"
+    else:
+        return error_page(418, "User not found")
+
 
 
 
