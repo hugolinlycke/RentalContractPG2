@@ -20,6 +20,9 @@ namespace ApartmentRentalSystem.Controllers
             {
                 ViewBag.Message = TempData["SuccessfullLogin"].ToString();
             }
+
+
+
             return View();
         }
         [HttpPost]
