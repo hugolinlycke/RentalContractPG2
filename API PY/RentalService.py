@@ -211,6 +211,28 @@ def login():
 
     return error_page(418, "Username and password does not match")
 
+#-------------------------------------------------------------------------------------------------------
+#                                          END OF LOGIN SERVICE
+#-------------------------------------------------------------------------------------------------------
+
+#metoder ATT GÖRA
+    
+    #CRUD för interest list
+    #Get specific interest list from apartmentId
+    #Get specific interest list from userid
+
+    #CRUD för rental offer
+    #Get specific rental offer with userID
+    #Get sepcific rental offer with landlordId
+
+    #CRUD för point
+    #Get specific point from userId
+
+    #Funktion för att poäng skall uppdateras automatisk efter en viss tid
+
+    
+    
+
 
 @app.route('/api/read/apartments', methods=['GET'])
 def getApartments():
@@ -406,25 +428,103 @@ def deleteApartment(Id):
         return error_page(418, "User not found")
 
 
-    #END OF LOGIN
-    #NEW SERVICE
+@app.route('/api/read/apartment/similar')
+def showSimilarApartment():
 
-    #metoder ATT GÖRA
-    
-    #CRUD för interest list
-    #Get specific interest list from apartmentId
-    #Get specific interest list from userid
+    if 'location' in request.args:
+        Location = (request.args['location'])
 
-    #CRUD för rental offer
-    #Get specific rental offer with userID
-    #Get sepcific rental offer with landlordId
+        cur = conn.cursor()
 
-    #CRUD för point
-    #Get specific point from userId
+        results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Apartment] WHERE Location = '" + Location + "';")
 
-    #Funktion för att poäng skall uppdateras automatisk efter en viss tid
-    #Filter funktion sortera efter price (range ex 300-2000), location och size
-    
-    #Show similar apartment when clicked an apartment (restrictions -> location)
+        response = []
+        for apartment in results:
+            response.append(
+                    {'Id': apartment.Id,
+                    'Price': apartment.Price,
+                    'NumberOfRooms': apartment.NumberOfRooms,
+                    'SizeOfApartment': apartment.SizeOfApartment,
+                    'Address': apartment.Address,
+                    'Location': apartment.Location,
+                    'Information': apartment.Information,
+                    'LandlordId': apartment.LandlordId,
+                    'Active': apartment.Active}
+                )
+        return jsonify(response)
+
+    else:
+        return error_page(418, 'Invalid parameter or parameter not found')
+
+#Filter funktion sortera efter price (range ex 300-2000), location och size
+@app.route('/api/read/apartment/filter', methods=['GET'])
+def filterApartments():
+    cur = conn.cursor()
+    to_filter = []
+    if 'location' in request.args:
+        Location = (request.args['location'])
+        if len(to_filter) >= 1:
+            to_filter.append(" AND ")
+        to_filter.append("Location = '" + Location + "'") 
+
+    if 'rooms' in request.args:
+        rooms = (request.args['rooms'])
+        if len(to_filter) >= 1:
+            to_filter.append(" AND ")
+        to_filter.append("NumberOfRooms ='" + rooms + "'")
+
+    if 'minprice' in request.args and 'maxprice' in request.args:
+        minprice = (request.args['minprice'])
+        maxprice = (request.args['maxprice'])
+        if len(to_filter) >= 1:
+            to_filter.append(" AND ")
+
+        to_filter.append("Price BETWEEN " + minprice + " AND " + maxprice)
+
+    strFilter = "WHERE "
+    for x in to_filter:
+        strFilter += x
+
+    if len(to_filter) > 0:
+        results = cur.execute('SELECT * FROM [ApartmentRentalDB].[dbo].[Apartment] ' + strFilter).fetchall()
+        response = []
+
+        if len(results) > 0:
+            for apartment in results:
+                response.append(
+                    {'Id': apartment.Id,
+                    'Price': apartment.Price,
+                    'NumberOfRooms': apartment.NumberOfRooms,
+                    'SizeOfApartment': apartment.SizeOfApartment,
+                    'Address': apartment.Address,
+                    'Location': apartment.Location,
+                    'Information': apartment.Information,
+                    'LandlordId': apartment.LandlordId,
+                    'Active': apartment.Active}
+                )
+            
+            return jsonify(response)
+        else:
+            return error_page(418, "Apartments not found")
+    else:
+        results = cur.execute('SELECT * FROM [ApartmentRentalDB].[dbo].[Apartment]').fetchall()
+        response = []
+
+        if len(results) > 0:
+            for apartment in results:
+                response.append(
+                    {'Id': apartment.Id,
+                    'Price': apartment.Price,
+                    'NumberOfRooms': apartment.NumberOfRooms,
+                    'SizeOfApartment': apartment.SizeOfApartment,
+                    'Address': apartment.Address,
+                    'Location': apartment.Location,
+                    'Information': apartment.Information,
+                    'LandlordId': apartment.LandlordId,
+                    'Active': apartment.Active}
+                )
+            
+            return jsonify(response)
+        
 
 app.run()
