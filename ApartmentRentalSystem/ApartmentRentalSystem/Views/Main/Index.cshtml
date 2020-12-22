@@ -1,4 +1,4 @@
-﻿
+﻿@model ApartmentRentalSystem.Models.User
 
 
 @{
@@ -131,6 +131,16 @@
 
     <div id="bottom">
         <div id="searchBox">
+            @using (Html.BeginForm())
+            {
+                <div>Username</div>
+                <div>@Html.TextBoxFor(m => m.Username)</div>
+                <div>Password</div>
+                <div>@Html.TextBoxFor(m => m.Password)</div>
+                <input type="submit" value="Loggin" />
+
+            }
+
         </div>
 
         <div id="apartements">
@@ -138,7 +148,7 @@
         </div><div id="footer"></div>
     </div>
 
- 
+
 
 </body>
 </html>
