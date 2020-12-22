@@ -14,22 +14,38 @@ namespace ApartmentRentalSystem.Controllers
     {
         private string BASE_URL = "http://127.0.0.1:5000/";
         // GET: Main
-        public ActionResult Index()
+        public async Task<ActionResult> IndexAsync()
         {
+            string URL = BASE_URL + "api/read/apartment?active=true";
+            HttpClient http = new HttpClient();
+            HttpResponseMessage response = await http.GetAsync(new Uri(URL));
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+
+                Apartment activeUser = JsonConvert.DeserializeObject<Apartment>(content);
+
+                if (activeUser != null)
+                {
+
+                    return View();
+                }
+
+            }
+
+
             if (TempData["SuccessfullLogin"] != null)
             {
                 ViewBag.Message = TempData["SuccessfullLogin"].ToString();
             }
-
-
-
             return View();
         }
         [HttpPost]
         public async Task<ActionResult> Index(User inloggning)
         {
 
-            string URL = BASE_URL + "api/read/apartments";
+            string URL = BASE_URL + "api/read/apartment?active=true";
             HttpClient http = new HttpClient();
             HttpResponseMessage response = await http.GetAsync(new Uri(URL));
 

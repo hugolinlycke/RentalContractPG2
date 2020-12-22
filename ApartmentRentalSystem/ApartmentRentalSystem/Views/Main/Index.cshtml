@@ -1,4 +1,4 @@
-﻿@model ApartmentRentalSystem.Models.User
+﻿@model ApartmentRentalSystem.Models.Apartment
 
 
 @{
@@ -133,19 +133,29 @@
         <div id="searchBox">
             @using (Html.BeginForm())
             {
-                <div>Username</div>
+                @*<div>Username</div>
                 <div>@Html.TextBoxFor(m => m.Username)</div>
                 <div>Password</div>
                 <div>@Html.TextBoxFor(m => m.Password)</div>
-                <input type="submit" value="Loggin" />
+                <input type="submit" value="Loggin" />*@
 
             }
 
         </div>
 
         <div id="apartements">
+            @*@foreach(var item in Model)
+            {
+                <table>
+                    <tr>
+                        <td>@Html.DisplayFor(x => item.id)</td>
+                    </tr>
+                </table>
+                
+            }*@
             @*MAKE IT AUTO, SO IT FILLS BY IT SELF*@
-        </div><div id="footer"></div>
+        </div>
+        <div id="footer"></div>
     </div>
 
 
