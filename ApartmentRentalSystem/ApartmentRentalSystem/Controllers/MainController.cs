@@ -14,7 +14,7 @@ namespace ApartmentRentalSystem.Controllers
     {
         private string BASE_URL = "http://127.0.0.1:5000/";
         // GET: Main
-        public async Task<ActionResult> IndexAsync()
+        public async Task<ActionResult> Index()
         {
             string URL = BASE_URL + "api/read/apartment?active=true";
             HttpClient http = new HttpClient();
@@ -24,11 +24,11 @@ namespace ApartmentRentalSystem.Controllers
             {
                 var content = await response.Content.ReadAsStringAsync();
 
-                Apartment activeUser = JsonConvert.DeserializeObject<Apartment>(content);
+                List<Apartment> listOfApartment = JsonConvert.DeserializeObject<List<Apartment>>(content);
 
-                if (activeUser != null)
+                if (listOfApartment != null)
                 {
-
+                    // nu skall vi foreach:a varje item i html för att kunna skapa en data-view
                     return View();
                 }
 
