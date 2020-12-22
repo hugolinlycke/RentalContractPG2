@@ -17,6 +17,12 @@ namespace ApartmentRentalSystem.Controllers
 
         public ActionResult Index()
         {
+            if (TempData["SuccessfullCreateAccount"] != null)
+            {
+                ViewBag.Message = TempData["SuccessfullCreateAccount"].ToString();
+            }
+            
+
             return View();
         }
         [HttpPost]
@@ -35,9 +41,9 @@ namespace ApartmentRentalSystem.Controllers
 
                 if (activeUser.Username != null || activeUser.Password != null)
                 {
+
+                    TempData["SuccessfullLogin"] = "You successfully logged in!";
                     return RedirectToAction("Index", "Main", inloggning);
-
-
                     //Remove "Login" Text from nav bar then add profile button, if possible
 
                 }
@@ -69,6 +75,13 @@ namespace ApartmentRentalSystem.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateAccount(User inloggning)
         {
+
+            if (inloggning.Username == null || inloggning.Password == null)
+            {
+                ViewBag.Message = String.Format("Please fill both Username and Password", DateTime.Now.ToString());
+                return View();
+            }
+
             string URL = BASE_URL + "api/create/user";
             HttpClient http = new HttpClient();
             
@@ -80,7 +93,7 @@ namespace ApartmentRentalSystem.Controllers
             {
                 if (newResponse != null)
                 {
-                    ViewBag.Message = String.Format("You successfully created an account!", DateTime.Now.ToString()); // DOESNT WORK
+                    TempData["SuccessfullCreateAccount"] = "You successfully created an account!";
                     return RedirectToAction("Index");
                 }
             }

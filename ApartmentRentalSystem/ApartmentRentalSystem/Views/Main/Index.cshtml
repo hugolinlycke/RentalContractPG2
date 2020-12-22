@@ -14,23 +14,22 @@
             top: 400px;
             left: 500px;
         }
-        .Parent{
-            position:relative;
+
+        .Parent {
+            position: relative;
         }
 
         .picture {
             margin-top: 150px;
             margin-bottom: 20px;
-
             width: 300px;
             height: 200px;
         }
 
         #mainScreenTop {
-            position:relative;
-            height:700px;
-            background-color:rebeccapurple;
-            
+            position: relative;
+            height: 700px;
+            background-color: rebeccapurple;
         }
 
         .mainScreenTopField {
@@ -38,12 +37,13 @@
             width: 32%;
             margin-right: 2%;
             box-sizing: border-box;
-            text-align:center;
+            text-align: center;
         }
 
-        .mainScreenTopField:last-child {
+            .mainScreenTopField:last-child {
                 margin-right: 0;
-        }
+            }
+
         #bottom {
             position: absolute;
             width: 100%;
@@ -76,19 +76,26 @@
         #footer {
             position: absolute;
             bottom: 0;
-            left:0;
+            left: 0;
             height: 200px;
             width: 100%;
             background-color: red;
         }
-        
-
-
-
     </style>
+    @if (ViewBag.Message != null)
+    {
+        <script type="text/javascript">
+
+            window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+        </script>
+
+    }
     <meta charset="ascii">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Titel der Seite | Name der Website</title>
+    <title>Apartment Rental</title>
+
 </head>
 <body style=" margin:0px; background-color:lightblue; border-bottom:solid">
     <div id="mainScreenTop">
@@ -126,11 +133,12 @@
         <div id="searchBox">
         </div>
 
-        <div id="apartements"> @*MAKE IT AUTO, SO IT FILLS BY IT SELF*@
+        <div id="apartements">
+            @*MAKE IT AUTO, SO IT FILLS BY IT SELF*@
         </div><div id="footer"></div>
     </div>
-    
 
-    
+ 
+
 </body>
 </html>
