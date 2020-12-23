@@ -230,9 +230,6 @@ def login():
 
     #Funktion för att poäng skall uppdateras automatisk efter en viss tid
 
-    
-    
-
 
 @app.route('/api/read/apartments', methods=['GET'])
 def getApartments():
@@ -298,6 +295,7 @@ def getApartmentWithId():
                     'Location': apartment.Location,
                     'Information': apartment.Information,
                     'LandlordId': apartment.LandlordId,
+                    'Picture': apartment.Picture,
                     'Active': apartment.Active}
                 )
             
@@ -311,7 +309,7 @@ def getApartmentWithId():
 def createApartment():
 
     data = ['Id', 'Price', 'numberOfRooms', 'sizeOfApartment', 'Address',
-    'Location', 'Information',  'LandlordId', 'Active']
+    'Location', 'Information',  'LandlordId', 'Picture', 'Active']
 
     for x in data:
         try: request.json[x]
@@ -326,13 +324,14 @@ def createApartment():
         Information = request.json['Information']
         LandlordId = request.json['LandlordId']
         Active = request.json['Active']
+        Picture = request.json['Picture']
 
         cur = conn.cursor()
 
         results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(LandlordId)).fetchall()
 
         if len(results) > 0:
-            cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[Apartment] (Price, numberOfRooms, sizeOfApartment, Address, Location, Information, LandlordId, Active) VALUES ("+ str(Price)  + ",'" + numberOfRooms + "','" + sizeOfApartment + "','" + Address + "','" + Location + "','" + Information + "'," + str(LandlordId) + ",'" + str(Active) +"');")
+            cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[Apartment] (Price, numberOfRooms, sizeOfApartment, Address, Location, Information, LandlordId, Active, Picture) VALUES ("+ str(Price)  + ",'" + numberOfRooms + "','" + sizeOfApartment + "','" + Address + "','" + Location + "','" + Information + "'," + str(LandlordId) + ",'" + str(Active) +"','" + Picture + "');")
         conn.commit()
         results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Apartment] WHERE Id = SCOPE_IDENTITY()").fetchall()
         if len(results1) > 0:
@@ -346,6 +345,7 @@ def createApartment():
                     'Location': apartment.Location,
                     'Information': apartment.Information,
                     'LandlordId': apartment.LandlordId,
+                    'Picture': apartment.Picture,
                     'Active': apartment.Active}
                 )
             return jsonify(response)
@@ -358,7 +358,7 @@ def createApartment():
 def updateApartment():
     
     data = ['Id', 'Price', 'numberOfRooms', 'sizeOfApartment', 'Address',
-    'Location', 'Information',  'LandlordId', 'Active']
+    'Location', 'Information',  'LandlordId', 'Picture','Active']
 
     for x in data:
         try: request.json[x]
@@ -374,13 +374,14 @@ def updateApartment():
         Information = request.json['Information']
         LandlordId = request.json['LandlordId']
         Active = request.json['Active']
+        Picture = request.json['Picture']
             
         cur = conn.cursor()
 
         results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Apartment] WHERE Id= " + str(Id)).fetchall()
 
         if len(results) > 0:
-            cur.execute("UPDATE [ApartmentRentalDB].[dbo].[Apartment] SET Price= " + str(Price) + ", numberOfRooms= '" + numberOfRooms + "', sizeOfApartment ='" + sizeOfApartment + "', Address = '" + Address + "', Location ='" +  Location + "', Information = '" + Information + "', LandlordId = " + str(LandlordId) + ", Active = '" + str(Active) + "' WHERE Id= " + str(Id))
+            cur.execute("UPDATE [ApartmentRentalDB].[dbo].[Apartment] SET Price= " + str(Price) + ", numberOfRooms= '" + numberOfRooms + "', sizeOfApartment ='" + sizeOfApartment + "', Address = '" + Address + "', Location ='" +  Location + "', Information = '" + Information + "', LandlordId = " + str(LandlordId) + ", Active = '" + str(Active) + "','" + Picture + "' WHERE Id= " + str(Id))
             conn.commit()
             results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Apartment] WHERE Id= " + str(Id)).fetchall()
             for apartment in results1:
@@ -393,6 +394,7 @@ def updateApartment():
                     'Location': apartment.Location,
                     'Information': apartment.Information,
                     'LandlordId': apartment.LandlordId,
+                    'Picture': apartment.Picture,
                     'Active': apartment.Active}
                 )
             return jsonify(response)
@@ -449,6 +451,7 @@ def showSimilarApartment(): #NEED DOCUMENTATION
                     'Location': apartment.Location,
                     'Information': apartment.Information,
                     'LandlordId': apartment.LandlordId,
+                    'Picture': apartment.Picture,
                     'Active': apartment.Active}
                 )
         return jsonify(response)
@@ -500,6 +503,7 @@ def filterApartments():
                     'Location': apartment.Location,
                     'Information': apartment.Information,
                     'LandlordId': apartment.LandlordId,
+                    'Picture': apartment.Picture,
                     'Active': apartment.Active}
                 )
             
@@ -521,6 +525,7 @@ def filterApartments():
                     'Location': apartment.Location,
                     'Information': apartment.Information,
                     'LandlordId': apartment.LandlordId,
+                    'Picture': apartment.Picture,
                     'Active': apartment.Active}
                 )
             
