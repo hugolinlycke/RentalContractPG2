@@ -426,7 +426,7 @@ def deleteApartment(Id):
         return error_page(418, "Apartment not found")
 
 
-@app.route('/api/read/apartment/similar')
+@app.route('/api/read/apartment/similar', methods=['GET'])
 def showSimilarApartment(): #NEED DOCUMENTATION
 
     if 'location' in request.args:
@@ -455,7 +455,6 @@ def showSimilarApartment(): #NEED DOCUMENTATION
     else:
         return error_page(418, 'Invalid parameter or parameter not found')
 
-#Filter funktion sortera efter price (range ex 300-2000), location och size
 @app.route('/api/read/apartment/filter', methods=['GET']) #NEED DOCUMENTATION
 def filterApartments():
     cur = conn.cursor()
