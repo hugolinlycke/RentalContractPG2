@@ -217,10 +217,6 @@ def login():
 
 #metoder ATT GÖRA
     
-    #CRUD för interest list
-    #Get specific interest list from apartmentId
-    #Get specific interest list from userid
-
     #CRUD för rental offer
     #Get specific rental offer with userID
     #Get sepcific rental offer with landlordId
@@ -427,7 +423,7 @@ def deleteApartment(Id):
         conn.commit()
         return "<h1>Deleted! wow!</h1>"
     else:
-        return error_page(418, "User not found")
+        return error_page(418, "Apartment not found")
 
 
 @app.route('/api/read/apartment/similar')
@@ -531,5 +527,157 @@ def filterApartments():
             
             return jsonify(response)
         
+#-------------------------------------------------------------------------------------------------------
+#                                          END OF APARTMENT SERVICE
+#-------------------------------------------------------------------------------------------------------
+
+
+@app.route('/api/read/interests', methods=['GET'])
+def getAllInterests():
+    cur = conn.cursor()
+    results = []
+    results = cur.execute('SELECT * FROM [ApartmentRentalDB].[dbo].[Interest];').fetchall()
+        
+    response = []
+
+    for interest in results:
+        response.append(
+            {'Id': interest.Id,
+            'UserId': interest.UserId,
+            'ApartmentId': interest.ApartmentId}
+        )
+        
+    return jsonify(response)
+
+@app.route('/api/read/interest', methods=['GET'])
+def getSpecificInterest():
+    cur = conn.cursor()
+    to_filter = []
+    if 'userid' in request.args:
+        userId = (request.args['userid'])
+        if len(to_filter) >= 1:
+            to_filter.append(" AND ")
+        to_filter.append("UserId = " + userId) 
+
+    if 'apartmentid' in request.args:
+        apartmentId = (request.args['apartmentid'])
+        if len(to_filter) >= 1:
+            to_filter.append(" AND ")
+        to_filter.append("ApartmentId =" + apartmentId)
+
+    strFilter = "WHERE "
+    for x in to_filter:
+        strFilter += x
+
+    if len(to_filter) > 0:
+        results = cur.execute('SELECT * FROM [ApartmentRentalDB].[dbo].[Interest] ' + strFilter).fetchall()
+        response = []
+
+        if len(results) > 0:
+            for interest in results:
+                response.append(
+                    {'Id': interest.Id,
+                    'UserId': interest.UserId,
+                    'ApartmentId': interest.ApartmentId}
+                )
+            
+            return jsonify(response)
+        else:
+            return error_page(418, "Interest list not found")
+    else:
+        return error_page(418, "Need to use atleast one parameter")
+
+@app.route('/api/create/interest', methods=['POST'])
+def createInterest():
+    
+    data = ['Id', 'UserId', 'ApartmentId']
+
+    for x in data:
+        try: request.json[x]
+        except KeyError: return error_page(418, x + " not set")
+
+    if request.json['UserId'] != None and request.json['ApartmentId']:
+        userId = request.json['UserId']
+        apartmentId = request.json['ApartmentId']
+        
+
+        cur = conn.cursor()
+
+        userResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(userId)).fetchall()
+        apartmentResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Apartment] WHERE Id = " + str(apartmentId)).fetchall()
+
+        if len(userResult) > 0 and len(apartmentResult) > 0:
+            cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[Interest] (UserId, ApartmentId) VALUES (" + str(userId) + ", " + str(apartmentId) + ");")
+            conn.commit()
+        else:
+            return error_page(418, "User or apartment does not exist")
+        
+        
+        results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Interest] WHERE Id = SCOPE_IDENTITY()").fetchall()
+        if len(results) > 0:
+            for interest in results:
+                response = (
+                    {'Id': interest.Id,
+                    'UserId': interest.UserId,
+                    'ApartmentId': interest.ApartmentId}
+                )
+            return jsonify(response)
+    else:
+        return error_page(418, "User id, Apartment id can't be NULL")
+
+@app.route('/api/update/interest', methods=['PUT'])
+def updateInterest():
+    data = ['Id', 'UserId', 'ApartmentId']
+
+    for x in data:
+        try: request.json[x]
+        except KeyError: return error_page(418, x + " not set")
+
+    if request.json['UserId'] != None and request.json['ApartmentId']:
+        Id = request.json['Id']
+        userId = request.json['UserId']
+        apartmentId = request.json['ApartmentId']
+            
+        cur = conn.cursor()
+
+        results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Interest] WHERE Id= " + str(Id)).fetchall()
+
+        if len(results) > 0:
+            cur.execute("UPDATE [ApartmentRentalDB].[dbo].[Interest] SET UserId= " + str(userId) + ", ApartmentId= " + str(apartmentId) + " WHERE Id= " + str(Id))
+            conn.commit()
+            results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Interest] WHERE Id= " + str(Id)).fetchall()
+            for interest in results1:
+                response = (
+                    {'Id': interest.Id,
+                    'UserId': interest.UserId,
+                    'ApartmentId': interest.ApartmentId}
+                )
+            return jsonify(response)
+        else:
+            return error_page(418, "Could not find interest list")
+
+    else:
+        return error_page(418, "Not all fields are filled out buddy")
+
+@app.route('/api/delete/interest/<Id>', methods=['DELETE'])
+def  deleteInterest(Id):
+    cur = conn.cursor()
+
+    results1 = cur.execute('SELECT * FROM [ApartmentRentalDB].[dbo].[Interest] WHERE Id =' + Id).fetchall()
+
+    if len(results1) > 0:
+        
+        cur.execute('DELETE FROM [ApartmentRentalDB].[dbo].[Interest] WHERE Id = ' + Id)
+        conn.commit()
+
+        return "<h1>Deleted! wow!</h1>"
+    else:
+        return error_page(418, "Interest list not found")
+
+
+#-------------------------------------------------------------------------------------------------------
+#                                          END OF INTEREST SERVICE
+#-------------------------------------------------------------------------------------------------------
+
 
 app.run()
