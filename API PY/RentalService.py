@@ -4,6 +4,8 @@ import pyodbc
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
+app.config["JSON_AS_ASCII"] = False
+
 
 conn = pyodbc.connect(
     'Driver={SQL Server};'
@@ -427,7 +429,7 @@ def deleteApartment(Id):
 
 
 @app.route('/api/read/apartment/similar', methods=['GET'])
-def showSimilarApartment(): #NEED DOCUMENTATION
+def showSimilarApartment():
 
     if 'location' in request.args:
         Location = (request.args['location'])
@@ -455,7 +457,7 @@ def showSimilarApartment(): #NEED DOCUMENTATION
     else:
         return error_page(418, 'Invalid parameter or parameter not found')
 
-@app.route('/api/read/apartment/filter', methods=['GET']) #NEED DOCUMENTATION
+@app.route('/api/read/apartment/filter', methods=['GET'])
 def filterApartments():
     cur = conn.cursor()
     to_filter = []
