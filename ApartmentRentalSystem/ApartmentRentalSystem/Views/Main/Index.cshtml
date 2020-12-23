@@ -67,7 +67,7 @@
             position: relative;
             top: 600px;
             left: 50%;
-            height: 800px;
+            height: auto;
             width: 1300px;
             transform: translate(-50%, -50%);
             background-color: pink;
@@ -84,6 +84,12 @@
         .apartment_bild{
             width:50px;
             height:50px;
+        }
+        img.apartment {
+            width: 200px;
+        }
+        td {
+            width: 100px;
         }
     </style>
     @if (ViewBag.Message != null)
@@ -137,11 +143,23 @@
         <div id="searchBox">
             @using (Html.BeginForm())
             {
-                @*<div>Username</div>
-                    <div>@Html.TextBoxFor(m => m.Username)</div>
-                    <div>Password</div>
-                    <div>@Html.TextBoxFor(m => m.Password)</div>
-                    <input type="submit" value="Loggin" />*@
+                <table>
+                    <tr>
+                        <td>Enter location: </td>
+                        <td>@Html.TextBox("location")</td>
+                    </tr>
+                    <tr>
+                        <td>Enter price: </td>
+                        <td>@Html.TextBox("price")</td>
+                    </tr>
+                    <tr>
+                        <td>Enter room: </td>
+                        <td>@Html.TextBox("room")</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><input type="submit" value="Submit"></td>
+                    </tr>
+                </table>
 
             }
 
@@ -151,22 +169,28 @@
             <table>
                 @foreach (var item in Model)
                 {
-                <tr style="border:2px solid black">
-                    <td><img src="~/Image/Apartments.jpg" class="apartment_bild"/></td>
-                    <td>@Html.DisplayFor(x => item.Address)</td>
-                    <td>@Html.DisplayFor(x => item.Information)</td>
-                    <td>@Html.DisplayFor(x => item.Location)</td>
-                    <td>@Html.DisplayFor(x => item.NumberOfRooms)</td>
-                    <td>@Html.DisplayFor(x => item.Price)</td>
-                    <td>@Html.DisplayFor(x => item.SizeOfApartment)</td>
-                </tr>
-                }
-            </table>
+                    <tr>
+                        <td colspan="2"><img src="~/Image/facebook.png" /></td>
+                    </tr>
+                    <tr style="border:2px solid black">
+                        <td>@Html.DisplayFor(x => item.NumberOfRooms) rooms</td>
+                        <td>@Html.DisplayFor(x => item.Price) kr/month</td>
+                    </tr>
+                    <tr style="border:2px solid black">
+                        <td>@Html.DisplayFor(x => item.Location)</td>
+                        <td>@Html.DisplayFor(x => item.SizeOfApartment) kvm</td>
+                    </tr>
+                    <tr style="border:2px solid black">
+                        <td>@Html.DisplayFor(x => item.Address)</td>
+                        <td>text</td>
+                    </tr>
+                 }
+                </table>
             @*MAKE IT AUTO, SO IT FILLS BY IT SELF*@
         </div>
         <div id="footer"></div>
     </div>
-
+   
 
 
 </body>

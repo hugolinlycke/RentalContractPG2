@@ -46,10 +46,33 @@ namespace ApartmentRentalSystem.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<ActionResult> Index(User inloggning)
+        public async Task<ActionResult> Index(int price, string location, int room)
         {
+            //Om alla värde är null så kommer en error. Behöver fixas
+            //Lägga till fler if satser
 
-            string URL = BASE_URL + "api/read/apartment?active=true";
+            string URL = BASE_URL + "api/read/apartment/";
+            if (location != null)
+            {
+                URL = BASE_URL + "api/read/apartment/filter?minprice=" + price + "&location=" + location +"&rooms=" + room;
+            }
+            if (price == null || location == null || room == 0)
+            {
+                URL = BASE_URL + "api/read/apartment?active=true";
+                //ViewBag.Message = String.Format("Please fill all inputs", DateTime.Now.ToString());
+                //return RedirectToAction("Index");
+            }
+            //else if (price != null || location == null || room == 0)
+            //{
+            //    URL = BASE_URL + "api/read/apartment/filter?minprice=" + price;
+            //}
+            //else if (price != null || location != null || room == 0)
+            //{
+            //    URL = BASE_URL + "api/read/apartment/filter?minprice=" + price;
+            //}
+            
+
+
             HttpClient http = new HttpClient();
             HttpResponseMessage response = await http.GetAsync(new Uri(URL));
 
@@ -57,15 +80,16 @@ namespace ApartmentRentalSystem.Controllers
             {
                 var content = await response.Content.ReadAsStringAsync();
 
-                User activeUser = JsonConvert.DeserializeObject<User>(content);
+                List<Apartment> listOfApartment = JsonConvert.DeserializeObject<List<Apartment>>(content);
 
-                if (activeUser.Username != null || activeUser.Password != null)
+                if (listOfApartment != null)
                 {
-
-                    TempData["SuccessfullLogin"] = "You successfully logged in!";
-                    return RedirectToAction("Index", "Main", inloggning);
-                    //Remove "Login" Text from nav bar then add profile button, if possible
-
+                    // nu skall vi foreach:a varje item i html för att kunna skapa en data-view
+                    return View(listOfApartment);
+                }
+                else
+                {
+                    // LISTAN ÄR TOM
                 }
 
             }
