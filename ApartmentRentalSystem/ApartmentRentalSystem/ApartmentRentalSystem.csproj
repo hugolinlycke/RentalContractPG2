@@ -213,6 +213,7 @@
     <Content Include="Views\Main\Index.cshtml" />
     <Content Include="Views\Main\Apartment.cshtml" />
     <Content Include="Views\Main\ProfilePage.cshtml" />
+    <Content Include="Views\Main\Index1.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

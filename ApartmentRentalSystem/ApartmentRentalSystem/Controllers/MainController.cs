@@ -29,7 +29,11 @@ namespace ApartmentRentalSystem.Controllers
                 if (listOfApartment != null)
                 {
                     // nu skall vi foreach:a varje item i html för att kunna skapa en data-view
-                    return View();
+                    return View(listOfApartment);
+                }
+                else
+                {
+                    // LISTAN ÄR TOM
                 }
 
             }

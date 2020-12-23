@@ -1,4 +1,4 @@
-﻿@model ApartmentRentalSystem.Models.Apartment
+﻿@model IEnumerable<ApartmentRentalSystem.Models.Apartment>
 
 
 @{
@@ -81,6 +81,10 @@
             width: 100%;
             background-color: red;
         }
+        .apartment_bild{
+            width:50px;
+            height:50px;
+        }
     </style>
     @if (ViewBag.Message != null)
     {
@@ -134,26 +138,30 @@
             @using (Html.BeginForm())
             {
                 @*<div>Username</div>
-                <div>@Html.TextBoxFor(m => m.Username)</div>
-                <div>Password</div>
-                <div>@Html.TextBoxFor(m => m.Password)</div>
-                <input type="submit" value="Loggin" />*@
+                    <div>@Html.TextBoxFor(m => m.Username)</div>
+                    <div>Password</div>
+                    <div>@Html.TextBoxFor(m => m.Password)</div>
+                    <input type="submit" value="Loggin" />*@
 
             }
 
         </div>
 
         <div id="apartements">
-            @*@foreach(var item in Model)
-            {
-                OBS! skapa inte en table för varje !!!!
-                <table>
-                    <tr>
-                        <td>@Html.DisplayFor(x => item.id)</td>
-                    </tr>
-                </table>
-                
-            }*@
+            <table>
+                @foreach (var item in Model)
+                {
+                <tr style="border:2px solid black">
+                    <td><img src="~/Image/Apartments.jpg" class="apartment_bild"/></td>
+                    <td>@Html.DisplayFor(x => item.Address)</td>
+                    <td>@Html.DisplayFor(x => item.Information)</td>
+                    <td>@Html.DisplayFor(x => item.Location)</td>
+                    <td>@Html.DisplayFor(x => item.NumberOfRooms)</td>
+                    <td>@Html.DisplayFor(x => item.Price)</td>
+                    <td>@Html.DisplayFor(x => item.SizeOfApartment)</td>
+                </tr>
+                }
+            </table>
             @*MAKE IT AUTO, SO IT FILLS BY IT SELF*@
         </div>
         <div id="footer"></div>
