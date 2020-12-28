@@ -51,17 +51,19 @@ namespace ApartmentRentalSystem.Controllers
             //Om alla värde är null så kommer en error. Behöver fixas
             //Lägga till fler if satser
 
-            string URL = BASE_URL + "api/read/apartment/";
-            if (location != null)
+            string URL = BASE_URL + "api/read/apartment?active=true";
+
+            if (price != 0 & location != null & room != 0)
             {
                 URL = BASE_URL + "api/read/apartment/filter?minprice=" + price + "&location=" + location +"&rooms=" + room;
             }
-            if (price == null || location == null || room == 0)
-            {
-                URL = BASE_URL + "api/read/apartment?active=true";
-                //ViewBag.Message = String.Format("Please fill all inputs", DateTime.Now.ToString());
-                //return RedirectToAction("Index");
-            }
+
+            //if (price == 0 || location == null || room == 0)
+            //{
+            //    URL = BASE_URL + "api/read/apartment?active=true";
+            //    ViewBag.Message = String.Format("Please fill all inputs", DateTime.Now.ToString());
+            //    return RedirectToAction("Index");
+            //}
             //else if (price != null || location == null || room == 0)
             //{
             //    URL = BASE_URL + "api/read/apartment/filter?minprice=" + price;
