@@ -16,6 +16,7 @@ namespace ApartmentRentalSystem.Controllers
         // GET: Main
         public async Task<ActionResult> Index()
         {
+
             string URL = BASE_URL + "api/read/apartment?active=true";
             HttpClient http = new HttpClient();
             HttpResponseMessage response = await http.GetAsync(new Uri(URL));
@@ -46,23 +47,21 @@ namespace ApartmentRentalSystem.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<ActionResult> Index(int price, string location, int room)
+        public async Task<ActionResult> Index(int Maxprice = 0, int Minprice = 0, string location = null, int room = 0)
         {
             //Om alla värde är null så kommer en error. Behöver fixas
             //Lägga till fler if satser
 
-            string URL = BASE_URL + "api/read/apartment?active=true";
+            
 
-            if (price != 0 & location != null & room != 0)
-            {
-                URL = BASE_URL + "api/read/apartment/filter?minprice=" + price + "&location=" + location +"&rooms=" + room;
-            }
+            string URL = BASE_URL + "api/read/apartment/filter?" + GetParam("minprice", Minprice) + GetParam("maxprice", Maxprice) + GetParam("location", location) + GetParam("rooms", room);
 
-            //if (price == 0 || location == null || room == 0)
+            URL = URL.TrimEnd('&');
+
+            //string URL_2 = BASE_URL + "api/read/apartment/filter?minprice=" + Minprice + "&maxprice=" + Minprice + "&location=" + location + "&rooms=" + room;
+            //if ( location == null)
             //{
-            //    URL = BASE_URL + "api/read/apartment?active=true";
-            //    ViewBag.Message = String.Format("Please fill all inputs", DateTime.Now.ToString());
-            //    return RedirectToAction("Index");
+            //    URL = BASE_URL + "api/read/apartment/filter?minprice=" + Minprice + "&maxprice=" + Minprice + "&rooms=" + room;
             //}
             //else if (price != null || location == null || room == 0)
             //{
@@ -72,7 +71,7 @@ namespace ApartmentRentalSystem.Controllers
             //{
             //    URL = BASE_URL + "api/read/apartment/filter?minprice=" + price;
             //}
-            
+
 
 
             HttpClient http = new HttpClient();
@@ -113,10 +112,32 @@ namespace ApartmentRentalSystem.Controllers
 
             return View();
         }
-
+        private string GetParam(string name, int number)
+        {
+            if (number == 0)
+            {
+                return "";
+            }
+            else
+            {
+                return name + "=" + number+ "&";
+            }
+        }
+        private string GetParam(string name, string text)
+        {
+            if (text == null || text=="")
+            {
+                return "";
+            }
+            else
+            {
+                return name + "=" + text + "&";
+            }
+        }
 
         public ActionResult Apartment()
         {
+
             return View();
         }
         
