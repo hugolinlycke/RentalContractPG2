@@ -1,6 +1,9 @@
 import flask
 from flask import request, jsonify
 import pyodbc
+import schedule
+import time
+import threading
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
@@ -16,7 +19,6 @@ conn = pyodbc.connect(
 
 @app.route('/', methods=['GET'])
 def home():
-        
     return "<h1>Main page</h1>"
 
 #GET ALL USERS
@@ -964,5 +966,45 @@ def  deletePoint(Id):
     else:
         return error_page(418, "Point not found")
 
+def updatePointTime():
+
+    cur = conn.cursor()
+
+    results = cur.execute('SELECT * FROM [ApartmentRentalDB].[dbo].[Point]').fetchall()
+    for user in results:
+        print(user.Id)
+        print(user.Points)
+
+    for user in results:
+        newPoints = user.Points + 5
+        cur.execute('UPDATE [ApartmentRentalDB].[dbo].[Point] SET Points = ' + str(newPoints) + ' WHERE Id = ' + str(user.Id))
+
+    cur.commit()
+
+    return "<h1>Updated</h1>"
+
+
+schedule.every().day.at("10:00").do(updatePointTime)
+
+def startTimer():
+    while(True):
+        schedule.run_pending()
+        time.sleep(1)
+
+
+class myThread (threading.Thread):
+   def __init__(self, threadID, name, counter):
+      threading.Thread.__init__(self)
+      self.threadID = threadID
+      self.name = name
+      self.counter = counter
+   def run(self):
+        print("THREAD START BEEP BOOP")
+        startTimer()
+        print("THREAD DEAD")
+
+thread1 = myThread(1, "Thread-1", 1)
+
+thread1.start()
 
 app.run()
