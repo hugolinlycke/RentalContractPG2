@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [ApartmentRentalDB]    Script Date: 2020-12-23 10:32:23 ******/
+/****** Object:  Database [ApartmentRentalDB]    Script Date: 2020-12-29 10:27:26 ******/
 CREATE DATABASE [ApartmentRentalDB]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -80,7 +80,7 @@ ALTER DATABASE [ApartmentRentalDB] SET QUERY_STORE = OFF
 GO
 USE [ApartmentRentalDB]
 GO
-/****** Object:  Table [dbo].[Apartment]    Script Date: 2020-12-23 10:32:23 ******/
+/****** Object:  Table [dbo].[Apartment]    Script Date: 2020-12-29 10:27:26 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -95,14 +95,14 @@ CREATE TABLE [dbo].[Apartment](
 	[Information] [nvarchar](500) NULL,
 	[LandlordId] [int] NOT NULL,
 	[Active] [bit] NOT NULL,
-	[Picture] [nvarchar](150) NULL,
+	[Picture] [nvarchar](max) NULL,
  CONSTRAINT [PK_Apartment] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Interest]    Script Date: 2020-12-23 10:32:23 ******/
+/****** Object:  Table [dbo].[Interest]    Script Date: 2020-12-29 10:27:26 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -117,7 +117,7 @@ CREATE TABLE [dbo].[Interest](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Point]    Script Date: 2020-12-23 10:32:23 ******/
+/****** Object:  Table [dbo].[Point]    Script Date: 2020-12-29 10:27:26 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -132,7 +132,7 @@ CREATE TABLE [dbo].[Point](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[RentalOffer]    Script Date: 2020-12-23 10:32:23 ******/
+/****** Object:  Table [dbo].[RentalOffer]    Script Date: 2020-12-29 10:27:26 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -148,7 +148,7 @@ CREATE TABLE [dbo].[RentalOffer](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[User]    Script Date: 2020-12-23 10:32:23 ******/
+/****** Object:  Table [dbo].[User]    Script Date: 2020-12-29 10:27:26 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON

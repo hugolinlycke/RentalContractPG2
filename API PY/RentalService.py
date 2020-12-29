@@ -1,9 +1,14 @@
 import flask
 from flask import request, jsonify
 import pyodbc
+import schedule
+import time
+import threading
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
+app.config["JSON_AS_ASCII"] = False
+
 
 conn = pyodbc.connect(
     'Driver={SQL Server};'
@@ -14,7 +19,6 @@ conn = pyodbc.connect(
 
 @app.route('/', methods=['GET'])
 def home():
-        
     return "<h1>Main page</h1>"
 
 #GET ALL USERS
@@ -427,7 +431,7 @@ def deleteApartment(Id):
 
 
 @app.route('/api/read/apartment/similar', methods=['GET'])
-def showSimilarApartment(): #NEED DOCUMENTATION
+def showSimilarApartment():
 
     if 'location' in request.args:
         Location = (request.args['location'])
@@ -455,7 +459,7 @@ def showSimilarApartment(): #NEED DOCUMENTATION
     else:
         return error_page(418, 'Invalid parameter or parameter not found')
 
-@app.route('/api/read/apartment/filter', methods=['GET']) #NEED DOCUMENTATION
+@app.route('/api/read/apartment/filter', methods=['GET'])
 def filterApartments():
     cur = conn.cursor()
     to_filter = []
@@ -605,11 +609,11 @@ def createInterest():
         userResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(userId)).fetchall()
         apartmentResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Apartment] WHERE Id = " + str(apartmentId)).fetchall()
 
-        if len(userResult) > 0 and len(apartmentResult) > 0:
+        if len(userResult) > 0 and userResult[0].Landlord == True and len(apartmentResult) > 0:
             cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[Interest] (UserId, ApartmentId) VALUES (" + str(userId) + ", " + str(apartmentId) + ");")
             conn.commit()
         else:
-            return error_page(418, "User or apartment does not exist")
+            return error_page(418, "Tenant user or apartment does not exist")
         
         
         results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Interest] WHERE Id = SCOPE_IDENTITY()").fetchall()
@@ -638,10 +642,10 @@ def updateInterest():
         apartmentId = request.json['ApartmentId']
             
         cur = conn.cursor()
-
+        userResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(userId)).fetchall()
         results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Interest] WHERE Id= " + str(Id)).fetchall()
 
-        if len(results) > 0:
+        if len(results) > 0 and userResult[0].Landlord == True :
             cur.execute("UPDATE [ApartmentRentalDB].[dbo].[Interest] SET UserId= " + str(userId) + ", ApartmentId= " + str(apartmentId) + " WHERE Id= " + str(Id))
             conn.commit()
             results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Interest] WHERE Id= " + str(Id)).fetchall()
@@ -678,5 +682,329 @@ def  deleteInterest(Id):
 #                                          END OF INTEREST SERVICE
 #-------------------------------------------------------------------------------------------------------
 
+@app.route('/api/read/rentals', methods=['GET'])
+def getAllRentals():
+    cur = conn.cursor()
+    results = []
+    results = cur.execute('SELECT * FROM [ApartmentRentalDB].[dbo].[RentalOffer];').fetchall()
+        
+    response = []
+
+    for rental in results:
+        response.append(
+            {'Id': rental.Id,
+            'LandlordId': rental.LandlordId,
+            'ApartmentId': rental.ApartmentId,
+            'UserId': rental.UserId}
+        )
+        
+    return jsonify(response)
+
+@app.route('/api/read/rental', methods=['GET'])
+def getSpecificRental():
+    cur = conn.cursor()
+    to_filter = []
+    if 'userid' in request.args:
+        userId = (request.args['userid'])
+        if len(to_filter) >= 1:
+            to_filter.append(" AND ")
+        to_filter.append("UserId = " + userId) 
+
+    if 'landlordid' in request.args:
+        landlordId = (request.args['landlordid'])
+        if len(to_filter) >= 1:
+            to_filter.append(" AND ")
+        to_filter.append("LandlordId =" + landlordId)
+
+    strFilter = "WHERE "
+    for x in to_filter:
+        strFilter += x
+
+    if len(to_filter) > 0:
+        results = cur.execute('SELECT * FROM [ApartmentRentalDB].[dbo].[RentalOffer] ' + strFilter).fetchall()
+        response = []
+
+        if len(results) > 0:
+            for rental in results:
+                response.append(
+                    {'Id': rental.Id,
+                    'LandlordId': rental.LandlordId,
+                    'ApartmentId': rental.ApartmentId,
+                    'UserId': rental.UserId}
+                )
+            
+            return jsonify(response)
+        else:
+            return error_page(418, "Rental offer not found")
+    else:
+        return error_page(418, "Need to use atleast one parameter")
+
+@app.route('/api/create/rental', methods=['POST'])
+def createRental():
+    
+    data = ['Id', 'LandlordId', 'ApartmentId', 'UserId']
+
+    for x in data:
+        try: request.json[x]
+        except KeyError: return error_page(418, x + " not set")
+
+    if request.json['UserId'] != None and request.json['ApartmentId'] and request.json['LandlordId'] != None:
+        userId = request.json['UserId']
+        apartmentId = request.json['ApartmentId']
+        landlordId = request.json['LandlordId']
+
+        cur = conn.cursor()
+
+        userResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(userId)).fetchall()
+        landlordResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(landlordId)).fetchall()
+        apartmentResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Apartment] WHERE Id = " + str(apartmentId)).fetchall()
+
+        if len(userResult) > 0 and userResult[0].Landlord == False and landlordResult[0].Landlord == True and len(apartmentResult) > 0:
+            cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[RentalOffer] (LandlordId, ApartmentId, UserId) VALUES (" + str(landlordId) + ", " + str(apartmentId) + ", " + str(userId) + ");")
+            conn.commit()
+        else:
+            return error_page(418, "User or apartment does not exist")
+        
+        
+        results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[RentalOffer] WHERE Id = SCOPE_IDENTITY()").fetchall()
+        if len(results) > 0:
+            for rental in results:
+                response = (
+                    {'Id': rental.Id,
+                    'LandlordId': rental.LandlordId,
+                    'ApartmentId': rental.ApartmentId,
+                    'UserId': rental.UserId}
+                )
+            return jsonify(response)
+    else:
+        return error_page(418, "User id, Apartment id and landlord id can't be NULL")
+
+@app.route('/api/update/rental', methods=['PUT'])
+def updateRental():
+    data = ['Id', 'LandlordId', 'ApartmentId', 'UserId']
+
+    for x in data:
+        try: request.json[x]
+        except KeyError: return error_page(418, x + " not set")
+
+    if request.json['UserId'] != None and request.json['ApartmentId'] and request.json['LandlordId'] != None:
+        Id = request.json['Id']
+        userId = request.json['UserId']
+        apartmentId = request.json['ApartmentId']
+        landlordId = request.json['LandlordId']
+
+            
+        cur = conn.cursor()
+        userResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(userId)).fetchall()
+        landlordResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(landlordId)).fetchall()
+        apartmentResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Apartment] WHERE Id = " + str(apartmentId)).fetchall()
+        
+        results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[RentalOffer] WHERE Id= " + str(Id)).fetchall()
+
+        if len(results) > 0 and userResult[0].Landlord == False and landlordResult[0].Landlord == True and len(apartmentResult) > 0:
+            cur.execute("UPDATE [ApartmentRentalDB].[dbo].[RentalOffer] SET LandlordId= " + str(landlordId) + ", ApartmentId= " + str(apartmentId) + ", UserId= " + str(userId) + " WHERE Id= " + str(Id))
+            conn.commit()
+            results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[RentalOffer] WHERE Id= " + str(Id)).fetchall()
+            
+            for rental in results1:
+                response = (
+                    {'Id': rental.Id,
+                    'LandlordId': rental.LandlordId,
+                    'ApartmentId': rental.ApartmentId,
+                    'UserId': rental.UserId}
+                )
+            
+            return jsonify(response)
+        else:
+            return error_page(418, "Could not find rental offer")
+
+    else:
+        return error_page(418, "Not all fields are filled out buddy")
+
+@app.route('/api/delete/rental/<Id>', methods=['DELETE'])
+def  deleteRental(Id):
+    cur = conn.cursor()
+
+    results = cur.execute('SELECT * FROM [ApartmentRentalDB].[dbo].[RentalOffer] WHERE Id =' + Id).fetchall()
+
+    if len(results) > 0:
+        
+        cur.execute('DELETE FROM [ApartmentRentalDB].[dbo].[RentalOffer] WHERE Id = ' + Id)
+        conn.commit()
+
+        return "<h1>Deleted! wow!</h1>"
+    else:
+        return error_page(418, "Rental offer not found")
+
+
+#-------------------------------------------------------------------------------------------------------
+#                                          END OF RENTAL OFFER SERVICE
+#-------------------------------------------------------------------------------------------------------
+
+@app.route('/api/read/points', methods=['GET'])
+def getAllPoints():
+    cur = conn.cursor()
+    results = []
+    results = cur.execute('SELECT * FROM [ApartmentRentalDB].[dbo].[Point];').fetchall()
+        
+    response = []
+
+    for point in results:
+        response.append(
+            {'Id': point.Id,
+            'UserId': point.UserId,
+            'Points': point.Points}
+        )
+        
+    return jsonify(response)
+
+@app.route('/api/read/point/<Id>', methods=['GET'])
+def getPointFromUser(Id):
+    cur = conn.cursor()
+    
+    results = cur.execute('SELECT * FROM [ApartmentRentalDB].[dbo].[Point] WHERE UserId = ' + Id).fetchall()
+
+    if len(results) > 0:
+        for point in results:
+            response = (
+                {'Id': point.Id,
+                'UserId': point.UserId,
+                'Points': point.Points}
+            )
+        
+        return jsonify(response)
+    else:
+        return error_page(418, "User not found")
+
+
+@app.route('/api/create/point', methods=['POST'])
+def createPoint():
+    
+    data = ['Id', 'UserId', 'Points']
+
+    for x in data:
+        try: request.json[x]
+        except KeyError: return error_page(418, x + " not set")
+
+    if request.json['UserId'] != None:
+        userId = request.json['UserId']
+        points = 0
+
+        cur = conn.cursor()
+
+        userResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(userId)).fetchall()
+
+        if len(userResult) > 0 and userResult[0].Landlord == False:
+            cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[Point] (UserId, Points) VALUES (" + str(userId) + ", " + str(points) + ");")
+            conn.commit()
+        else:
+            return error_page(418, "User does not exist")
+        
+        
+        results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Point] WHERE Id = SCOPE_IDENTITY()").fetchall()
+        if len(results) > 0:
+            for point in results:
+                response = (
+                    {'Id': point.Id,
+                    'UserId': point.UserId,
+                    'Points': point.Points}
+                )
+            return jsonify(response)
+    else:
+        return error_page(418, "User id can't be NULL")
+
+@app.route('/api/update/point', methods=['PUT'])
+def updatePoint():
+    data = ['Id', 'UserId', 'Points']
+
+    for x in data:
+        try: request.json[x]
+        except KeyError: return error_page(418, x + " not set")
+
+    if request.json['UserId'] != None and request.json['Points']:
+        Id = request.json['Id']
+        userId = request.json['UserId']
+        points = request.json['Points']
+
+            
+        cur = conn.cursor()
+        userResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(userId)).fetchall()
+        
+        results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Point] WHERE Id= " + str(Id)).fetchall()
+
+        if len(results) > 0 and userResult[0].Landlord == False:
+            cur.execute("UPDATE [ApartmentRentalDB].[dbo].[Point] SET UserId= " + str(userId) + ", Points = " + str(points) + " WHERE Id= " + str(Id))
+            conn.commit()
+            results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Point] WHERE Id= " + str(Id)).fetchall()
+            
+            for point in results1:
+                response = (
+                    {'Id': point.Id,
+                    'UserId': point.UserId,
+                    'Points': point.Points}
+                )
+            
+            return jsonify(response)
+        else:
+            return error_page(418, "Could not find user")
+
+    else:
+        return error_page(418, "Not all fields are filled out buddy")
+
+@app.route('/api/delete/point/<Id>', methods=['DELETE'])
+def  deletePoint(Id):
+    cur = conn.cursor()
+
+    results = cur.execute('SELECT * FROM [ApartmentRentalDB].[dbo].[Point] WHERE Id =' + Id).fetchall()
+
+    if len(results) > 0:
+        
+        cur.execute('DELETE FROM [ApartmentRentalDB].[dbo].[Point] WHERE Id = ' + Id)
+        conn.commit()
+
+        return "<h1>Deleted! wow!</h1>"
+    else:
+        return error_page(418, "Point not found")
+
+def updatePointTime():
+
+    cur = conn.cursor()
+
+    results = cur.execute('SELECT * FROM [ApartmentRentalDB].[dbo].[Point]').fetchall()
+    for user in results:
+        print(user.Id)
+        print(user.Points)
+
+    for user in results:
+        newPoints = user.Points + 5
+        cur.execute('UPDATE [ApartmentRentalDB].[dbo].[Point] SET Points = ' + str(newPoints) + ' WHERE Id = ' + str(user.Id))
+
+    cur.commit()
+
+    return "<h1>Updated</h1>"
+
+
+schedule.every().day.at("10:00").do(updatePointTime)
+
+def startTimer():
+    while(True):
+        schedule.run_pending()
+        time.sleep(1)
+
+
+class myThread (threading.Thread):
+   def __init__(self, threadID, name, counter):
+      threading.Thread.__init__(self)
+      self.threadID = threadID
+      self.name = name
+      self.counter = counter
+   def run(self):
+        print("THREAD START BEEP BOOP")
+        startTimer()
+        print("THREAD DEAD")
+
+thread1 = myThread(1, "Thread-1", 1)
+
+thread1.start()
 
 app.run()
