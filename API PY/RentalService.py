@@ -219,18 +219,6 @@ def login():
 #                                          END OF LOGIN SERVICE
 #-------------------------------------------------------------------------------------------------------
 
-#metoder ATT GÖRA
-    
-    #CRUD för rental offer
-    #Get specific rental offer with userID
-    #Get sepcific rental offer with landlordId
-
-    #CRUD för point
-    #Get specific point from userId
-
-    #Funktion för att poäng skall uppdateras automatisk efter en viss tid
-
-
 @app.route('/api/read/apartments', methods=['GET'])
 def getApartments():
     cur = conn.cursor()
@@ -330,7 +318,7 @@ def createApartment():
 
         results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(LandlordId)).fetchall()
 
-        if len(results) > 0:
+        if len(results) > 0 and results[0].Landlord == True:
             cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[Apartment] (Price, numberOfRooms, sizeOfApartment, Address, Location, Information, LandlordId, Active, Picture) VALUES ("+ str(Price)  + ",'" + numberOfRooms + "','" + sizeOfApartment + "','" + Address + "','" + Location + "','" + Information + "'," + str(LandlordId) + ",'" + str(Active) +"','" + Picture + "');")
         conn.commit()
         results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Apartment] WHERE Id = SCOPE_IDENTITY()").fetchall()
@@ -380,7 +368,7 @@ def updateApartment():
 
         results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Apartment] WHERE Id= " + str(Id)).fetchall()
 
-        if len(results) > 0:
+        if len(results) > 0 and results[0].Landlord == True:
             cur.execute("UPDATE [ApartmentRentalDB].[dbo].[Apartment] SET Price= " + str(Price) + ", numberOfRooms= '" + numberOfRooms + "', sizeOfApartment ='" + sizeOfApartment + "', Address = '" + Address + "', Location ='" +  Location + "', Information = '" + Information + "', LandlordId = " + str(LandlordId) + ", Active = '" + str(Active) + "','" + Picture + "' WHERE Id= " + str(Id))
             conn.commit()
             results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Apartment] WHERE Id= " + str(Id)).fetchall()
