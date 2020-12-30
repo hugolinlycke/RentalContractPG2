@@ -868,7 +868,7 @@ def getPointFromUser(Id):
 @app.route('/api/create/point', methods=['POST'])
 def createPoint():
     
-    data = ['Id', 'UserId', 'Points']
+    data = ['UserId', 'Points']
 
     for x in data:
         try: request.json[x]
@@ -882,10 +882,12 @@ def createPoint():
 
         userResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(userId)).fetchall()
         pointResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Point] WHERE UserId = " + str(userId)).fetchall()
-
-        if len(userResult) > 0 and userResult[0].Landlord == False and len(pointResult) < 1:
-            cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[Point] (UserId, Points) VALUES (" + str(userId) + ", " + str(points) + ");")
-            conn.commit()
+        
+        if len(userResult) > 0 and len(userResult) > 0 and len(pointResult) < 1:
+            
+            if userResult[0].Landlord == False:
+                cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[Point] (UserId, Points) VALUES (" + str(userId) + ", " + str(points) + ");")
+                conn.commit()
         else:
             return error_page(418, "User does not exist or user already exists in point")
         
@@ -918,22 +920,23 @@ def updatePoint():
             
         cur = conn.cursor()
         userResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(userId)).fetchall()
-        pointResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Point] WHERE UserId = " + str(userId)).fetchall()
+        pointResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Point] WHERE UserId = " + str(userId) + " AND NOT Id = " + str(Id)).fetchall()
         results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Point] WHERE Id= " + str(Id)).fetchall()
-
-        if len(results) > 0 and userResult[0].Landlord == False and len(pointResult) < 1:
-            cur.execute("UPDATE [ApartmentRentalDB].[dbo].[Point] SET UserId= " + str(userId) + ", Points = " + str(points) + " WHERE Id= " + str(Id))
-            conn.commit()
-            results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Point] WHERE Id= " + str(Id)).fetchall()
-            
-            for point in results1:
-                response = (
-                    {'Id': point.Id,
-                    'UserId': point.UserId,
-                    'Points': point.Points}
-                )
-            
-            return jsonify(response)
+        print()
+        if len(results) > 0 and len(userResult) > 0 and len(pointResult) == 0:
+            if userResult[0].Landlord == False:
+                cur.execute("UPDATE [ApartmentRentalDB].[dbo].[Point] SET UserId= " + str(userId) + ", Points = " + str(points) + " WHERE Id= " + str(Id))
+                conn.commit()
+                results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Point] WHERE Id= " + str(Id)).fetchall()
+                
+                for point in results1:
+                    response = (
+                        {'Id': point.Id,
+                        'UserId': point.UserId,
+                        'Points': point.Points}
+                    )
+                
+                return jsonify(response)
         else:
             return error_page(418, "Could not find user or user already exists in point")
 

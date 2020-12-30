@@ -57,7 +57,7 @@ class LoginUnittest(unittest.TestCase):
         assert response.status_code == 418
     
     def test_read1_read_all_users(self):
-        response = requests.get("http://127.0.0.1:5000/api/read/user")
+        response = requests.get("http://127.0.0.1:5000/api/read/users")
         assert response.status_code == 200
 
     def test_read2_read_specific_user(self):
