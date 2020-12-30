@@ -143,22 +143,22 @@
         <div id="searchBox">
             @using (Html.BeginForm())
             {
-            <table style="margin-left:100px;">
-                <tr style="margin-top: 50px;">
-                    <td style="font-weight:bold;">Enter location: </td>
-                    <td style="font-weight:bold;">Enter Min price: </td>
-                    <td style="font-weight:bold;">Enter Max price: </td>
-                    <td style="font-weight:bold;">Enter room: </td>
-                </tr>
-                <tr>
-                    <td>@Html.TextBox("location")</td>
-                    <td>@Html.TextBox("Minprice")</td>
-                    <td>@Html.TextBox("Maxprice")</td>
-                    <td>@Html.TextBox("room")</td>
-                </tr>
-                    
-            </table>
-            <input type="submit" value="Submit" style="margin-left:47%; margin-top:20px;">
+                <table style="margin-left:100px;">
+                    <tr style="margin-top: 50px;">
+                        <td style="font-weight:bold;">Enter location: </td>
+                        <td style="font-weight:bold;">Enter Min price: </td>
+                        <td style="font-weight:bold;">Enter Max price: </td>
+                        <td style="font-weight:bold;">Enter room: </td>
+                    </tr>
+                    <tr>
+                        <td>@Html.TextBox("location")</td>
+                        <td>@Html.TextBox("Minprice")</td>
+                        <td>@Html.TextBox("Maxprice")</td>
+                        <td>@Html.TextBox("room")</td>
+                    </tr>
+
+                </table>
+                <input type="submit" value="Submit" style="margin-left:47%; margin-top:20px;">
             }
 
         </div>
@@ -166,7 +166,7 @@
         <div id="apartements">
 
             @foreach (var item in Model)
-            {<table  style="float:left;margin:5px;">
+            {<table style="float:left;margin:5px;">
                     <tr>
                         <td colspan="2"><img src="~/Image/facebook.png" /></td>
                     </tr>
@@ -182,7 +182,7 @@
                         <td>@Html.DisplayFor(x => item.Address)</td>
                         <td>@Html.ActionLink("Go To", "Apartment", "Main", new { Id = item.Id }, null)</td>
                     </tr>
-             </table>
+                </table>
             }
 
             @*MAKE IT AUTO, SO IT FILLS BY IT SELF*@
@@ -190,22 +190,27 @@
 
         <div id="footer">
             <h3 style="margin-left:45%;margin-right:45%;width:300px;margin-top:30px;margin-bottom:30px;">Follow us on:</h3>
-            <a style="float:left;margin:88px; margin-left:220px">
+            <a style="float:left;margin:88px; margin-left:220px" rel="nofollow" target="_blank" href="http://www.facebook.com">
                 <img src="~/Image/facebook.png" />
             </a>
-            <a style="float:left;margin:88px;">
+            <a style="float:left;margin:88px;" rel = "nofollow" target="_blank" href="http://www.instagram.com">
                 <img src="~/Image/instagram.png" />
             </a>
-            <a style="float:left;margin:88px;">
+            <a style="float:left;margin:88px;" rel="nofollow" target="_blank" href="http://www.twitter.com">
                 <img src="~/Image/twitter.png" />
             </a>
-            <a style="float:left;margin:88px;">
+            <a style="float:left;margin:88px;" rel="nofollow" target="_blank" href="http://www.youtube.com">
                 <img src="~/Image/youtube.png" />
             </a>
         </div>
     </div>
 
-    
+    @*<div id="icons">
+        <a rel="nofollow" target="_blank" href="http://www.facebook.com"><img class="picture" src="~/Image/facebook.png" width="40px"></a>
+        <a rel="nofollow" target="_blank" href="http://www.instagram.com"><img class="picture" src="~/Image/instagram.png" width="40px"></a>
+        <a rel="nofollow" target="_blank" href="http://www.youtube.com"><img class="picture" src="~/Image/youtube.png" width="40px"></a>
+        <a rel="nofollow" target="_blank" href="http://www.twitter.com"><img class="picture" src="~/Image/twitter.png" width="40px"></a>
+    </div>*@
 
 </body>
 </html>

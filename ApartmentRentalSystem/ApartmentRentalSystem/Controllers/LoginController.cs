@@ -44,7 +44,9 @@ namespace ApartmentRentalSystem.Controllers
 
                     TempData["SuccessfullLogin"] = "You successfully logged in!";
                     // ADD SESSION FOR LOGGIN
-                    return RedirectToAction("Index", "Main", inloggning);
+                    Session["User"] = activeUser;
+
+                    return RedirectToAction("Index", "Main", activeUser);
                     //Remove "Login" Text from nav bar then add profile button, if possible
 
                 }

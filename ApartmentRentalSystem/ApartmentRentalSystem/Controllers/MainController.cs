@@ -29,6 +29,14 @@ namespace ApartmentRentalSystem.Controllers
 
                 if (listOfApartment != null)
                 {
+                    if (Session["User"] != null)
+                    {
+                        // 
+                    }
+                    if (TempData["SuccessfullLogin"] != null)
+                    {
+                        ViewBag.Message = TempData["SuccessfullLogin"].ToString();
+                    }
                     // nu skall vi foreach:a varje item i html för att kunna skapa en data-view
                     return View(listOfApartment);
                 }
@@ -40,10 +48,7 @@ namespace ApartmentRentalSystem.Controllers
             }
 
 
-            if (TempData["SuccessfullLogin"] != null)
-            {
-                ViewBag.Message = TempData["SuccessfullLogin"].ToString();
-            }
+            
             return View();
         }
         [HttpPost]
@@ -52,25 +57,13 @@ namespace ApartmentRentalSystem.Controllers
             //Om alla värde är null så kommer en error. Behöver fixas
             //Lägga till fler if satser
 
-            
 
-            string URL = BASE_URL + "api/read/apartment/filter?" + GetParam("minprice", Minprice) + GetParam("maxprice", Maxprice) + GetParam("location", location) + GetParam("rooms", room);
+            string URL = BASE_URL + "api/read/apartment/filter?" + GetParam("minprice", Minprice, "maxprice", Maxprice) + GetParam("location", location) + GetParam("rooms", room);
+            //string URL = BASE_URL + "api/read/apartment/filter?" + GetParam("minprice", Minprice) + GetParam("maxprice", Maxprice) + GetParam("location", location) + GetParam("rooms", room);
 
             URL = URL.TrimEnd('&');
 
-            //string URL_2 = BASE_URL + "api/read/apartment/filter?minprice=" + Minprice + "&maxprice=" + Minprice + "&location=" + location + "&rooms=" + room;
-            //if ( location == null)
-            //{
-            //    URL = BASE_URL + "api/read/apartment/filter?minprice=" + Minprice + "&maxprice=" + Minprice + "&rooms=" + room;
-            //}
-            //else if (price != null || location == null || room == 0)
-            //{
-            //    URL = BASE_URL + "api/read/apartment/filter?minprice=" + price;
-            //}
-            //else if (price != null || location != null || room == 0)
-            //{
-            //    URL = BASE_URL + "api/read/apartment/filter?minprice=" + price;
-            //}
+            
 
 
 
@@ -85,6 +78,10 @@ namespace ApartmentRentalSystem.Controllers
 
                 if (listOfApartment != null)
                 {
+                    if (TempData["ApartmentRequirmentsSearch"] != null)
+                    {
+                        ViewBag.Message = TempData["ApartmentRequirmentsSearch"].ToString();
+                    }
                     // nu skall vi foreach:a varje item i html för att kunna skapa en data-view
                     return View(listOfApartment);
                 }
@@ -114,8 +111,13 @@ namespace ApartmentRentalSystem.Controllers
         }
         private string GetParam(string name, int number)
         {
-            if (number == 0)
+            if (number <= 0)
             {
+                if (number < 0)
+                {
+                    TempData["ApartmentRequirmentsSearch"] = "You need to enter both Min-Price and Max-price";
+                    return "";
+                }
                 return "";
             }
             else
@@ -134,6 +136,28 @@ namespace ApartmentRentalSystem.Controllers
                 return name + "=" + text + "&";
             }
         }
+        private string GetParam(string name1, int number1, string name2, int number2)
+        {
+            if (number1 <= 0 || number2 <= 0)
+            {
+                if (number1 == 0 & number2 == 0)
+                {
+                    return "";
+                }
+                TempData["ApartmentRequirmentsSearch"] = "You need to enter both Min-Price and Max-price";
+                return "";
+            }
+            else
+            {
+                if (number1 > number2)
+                {
+                    TempData["ApartmentRequirmentsSearch"] = "Min-Price cant be greater then Max-Price, Please try again";
+                    return "";
+                }
+                return name1 + "=" + number1 + "&" + name2 + "=" + number2 + "&";
+            }
+        }
+
 
         public ActionResult Apartment()
         {
