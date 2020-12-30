@@ -881,12 +881,13 @@ def createPoint():
         cur = conn.cursor()
 
         userResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(userId)).fetchall()
+        pointResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Point] WHERE UserId = " + str(userId)).fetchall()
 
-        if len(userResult) > 0 and userResult[0].Landlord == False:
+        if len(userResult) > 0 and userResult[0].Landlord == False and len(pointResult) < 1:
             cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[Point] (UserId, Points) VALUES (" + str(userId) + ", " + str(points) + ");")
             conn.commit()
         else:
-            return error_page(418, "User does not exist")
+            return error_page(418, "User does not exist or user already exists in point")
         
         
         results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Point] WHERE Id = SCOPE_IDENTITY()").fetchall()
@@ -917,10 +918,10 @@ def updatePoint():
             
         cur = conn.cursor()
         userResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(userId)).fetchall()
-        
+        pointResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Point] WHERE UserId = " + str(userId)).fetchall()
         results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Point] WHERE Id= " + str(Id)).fetchall()
 
-        if len(results) > 0 and userResult[0].Landlord == False:
+        if len(results) > 0 and userResult[0].Landlord == False and len(pointResult) < 1:
             cur.execute("UPDATE [ApartmentRentalDB].[dbo].[Point] SET UserId= " + str(userId) + ", Points = " + str(points) + " WHERE Id= " + str(Id))
             conn.commit()
             results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Point] WHERE Id= " + str(Id)).fetchall()
@@ -934,7 +935,7 @@ def updatePoint():
             
             return jsonify(response)
         else:
-            return error_page(418, "Could not find user")
+            return error_page(418, "Could not find user or user already exists in point")
 
     else:
         return error_page(418, "Not all fields are filled out buddy")
