@@ -237,6 +237,7 @@ def getApartments():
             'Location': apartment.Location,
             'Information': apartment.Information,
             'LandlordId': apartment.LandlordId,
+            'Picture': apartment.Picture,
             'Active': apartment.Active}
         )
         
@@ -296,7 +297,7 @@ def getApartmentWithId():
 @app.route('/api/create/apartment', methods=['POST'])
 def createApartment():
 
-    data = ['Id', 'Price', 'numberOfRooms', 'sizeOfApartment', 'Address',
+    data = ['Price', 'numberOfRooms', 'sizeOfApartment', 'Address',
     'Location', 'Information',  'LandlordId', 'Picture', 'Active']
 
     for x in data:
@@ -317,11 +318,13 @@ def createApartment():
         cur = conn.cursor()
 
         results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(LandlordId)).fetchall()
-
-        if len(results) > 0 and results[0].Landlord == True:
-            cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[Apartment] (Price, numberOfRooms, sizeOfApartment, Address, Location, Information, LandlordId, Active, Picture) VALUES ("+ str(Price)  + ",'" + numberOfRooms + "','" + sizeOfApartment + "','" + Address + "','" + Location + "','" + Information + "'," + str(LandlordId) + ",'" + str(Active) +"','" + Picture + "');")
-        conn.commit()
-        results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Apartment] WHERE Id = SCOPE_IDENTITY()").fetchall()
+        if len(results) > 0:
+            if results[0].Landlord == True:
+                cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[Apartment] (Price, numberOfRooms, sizeOfApartment, Address, Location, Information, LandlordId, Active, Picture) VALUES ("+ str(Price)  + ",'" + numberOfRooms + "','" + sizeOfApartment + "','" + Address + "','" + Location + "','" + Information + "'," + str(LandlordId) + ",'" + str(Active) +"','" + Picture + "');")
+                conn.commit()
+                results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Apartment] WHERE Id = SCOPE_IDENTITY()").fetchall()
+            else:
+                return error_page(418, "User is not landlord, id: " + str(LandlordId))
         if len(results1) > 0:
             for apartment in results1:
                 response = (
@@ -338,7 +341,7 @@ def createApartment():
                 )
             return jsonify(response)
         else:
-            return error_page(418, "Landlord don't exist with id: " + LandlordId)
+            return error_page(418, "Landlord don't exist with id: " + str(LandlordId))
     else:
         return error_page(418, "Id, Address, location, landlord id and Active can't be NULL")
 
@@ -367,10 +370,14 @@ def updateApartment():
         cur = conn.cursor()
 
         results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Apartment] WHERE Id= " + str(Id)).fetchall()
+        userResults = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(LandlordId)).fetchall()
 
-        if len(results) > 0 and results[0].Landlord == True:
-            cur.execute("UPDATE [ApartmentRentalDB].[dbo].[Apartment] SET Price= " + str(Price) + ", numberOfRooms= '" + numberOfRooms + "', sizeOfApartment ='" + sizeOfApartment + "', Address = '" + Address + "', Location ='" +  Location + "', Information = '" + Information + "', LandlordId = " + str(LandlordId) + ", Active = '" + str(Active) + "','" + Picture + "' WHERE Id= " + str(Id))
-            conn.commit()
+        if len(results) > 0 and len(userResults) > 0:
+            if userResults[0].Landlord == True:
+                cur.execute("UPDATE [ApartmentRentalDB].[dbo].[Apartment] SET Price= " + str(Price) + ", numberOfRooms= '" + numberOfRooms + "', sizeOfApartment ='" + sizeOfApartment + "', Address = '" + Address + "', Location ='" +  Location + "', Information = '" + Information + "', LandlordId = " + str(LandlordId) + ", Active = '" + str(Active) + "', Picture = '" + Picture + "' WHERE Id= " + str(Id))
+                conn.commit()
+            else:
+                return error_page(418, "User is not landlord, id: " + str(LandlordId))
             results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Apartment] WHERE Id= " + str(Id)).fetchall()
             for apartment in results1:
                 response = (
@@ -596,10 +603,17 @@ def createInterest():
 
         userResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(userId)).fetchall()
         apartmentResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Apartment] WHERE Id = " + str(apartmentId)).fetchall()
+        interestResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Interest] WHERE UserId = " + str(userId)).fetchall()
 
-        if len(userResult) > 0 and userResult[0].Landlord == True and len(apartmentResult) > 0:
-            cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[Interest] (UserId, ApartmentId) VALUES (" + str(userId) + ", " + str(apartmentId) + ");")
-            conn.commit()
+        if len(userResult) > 0 and len(apartmentResult) > 0:
+            if userResult[0].Landlord == False:
+                if len(interestResult) <= 0:
+                    cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[Interest] (UserId, ApartmentId) VALUES (" + str(userId) + ", " + str(apartmentId) + ");")
+                    conn.commit()
+                else:
+                    return error_page(418, "User already exists in interest table")
+            else:
+                  return error_page(418, "User is not a tenant") 
         else:
             return error_page(418, "Tenant user or apartment does not exist")
         
@@ -632,18 +646,25 @@ def updateInterest():
         cur = conn.cursor()
         userResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(userId)).fetchall()
         results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Interest] WHERE Id= " + str(Id)).fetchall()
+        interestResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Interest] WHERE UserId = " + str(userId) + " AND NOT Id = " + str(Id)).fetchall()
 
-        if len(results) > 0 and userResult[0].Landlord == True :
-            cur.execute("UPDATE [ApartmentRentalDB].[dbo].[Interest] SET UserId= " + str(userId) + ", ApartmentId= " + str(apartmentId) + " WHERE Id= " + str(Id))
-            conn.commit()
-            results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Interest] WHERE Id= " + str(Id)).fetchall()
-            for interest in results1:
-                response = (
-                    {'Id': interest.Id,
-                    'UserId': interest.UserId,
-                    'ApartmentId': interest.ApartmentId}
-                )
-            return jsonify(response)
+        if len(results) > 0 and len(userResult) > 0:
+            if userResult[0].Landlord == False:
+                if len(interestResult) == 0:
+                    cur.execute("UPDATE [ApartmentRentalDB].[dbo].[Interest] SET UserId= " + str(userId) + ", ApartmentId= " + str(apartmentId) + " WHERE Id= " + str(Id))
+                    conn.commit()
+                    results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Interest] WHERE Id= " + str(Id)).fetchall()
+                    for interest in results1:
+                        response = (
+                            {'Id': interest.Id,
+                            'UserId': interest.UserId,
+                            'ApartmentId': interest.ApartmentId}
+                        )
+                    return jsonify(response)
+                else:
+                    return error_page(418, "User already exists in table")
+            else:
+                return error_page(418, "User is not a tenant")
         else:
             return error_page(418, "Could not find interest list")
 
