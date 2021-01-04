@@ -13,6 +13,12 @@ namespace ApartmentRentalSystem.Controllers
     public class MainController : Controller
     {
         private string BASE_URL = "http://127.0.0.1:5000/";
+
+        public int Function()
+        {
+            throw new NotImplementedException();
+        }
+
         // GET: Main
         public async Task<ActionResult> Index()
         {
@@ -109,13 +115,13 @@ namespace ApartmentRentalSystem.Controllers
 
             return View();
         }
-        private string GetParam(string name, int number)
+        public string GetParam(string name, int number)
         {
             if (number <= 0)
             {
                 if (number < 0)
                 {
-                    TempData["ApartmentRequirmentsSearch"] = "You need to enter both Min-Price and Max-price";
+                    TempData["ApartmentRequirmentsSearch"] = "You need to enter a positive number in room input! Please try again.";
                     return "";
                 }
                 return "";
@@ -125,7 +131,7 @@ namespace ApartmentRentalSystem.Controllers
                 return name + "=" + number+ "&";
             }
         }
-        private string GetParam(string name, string text)
+        public string GetParam(string name, string text)
         {
             if (text == null || text=="")
             {
@@ -136,7 +142,7 @@ namespace ApartmentRentalSystem.Controllers
                 return name + "=" + text + "&";
             }
         }
-        private string GetParam(string name1, int number1, string name2, int number2)
+        public string GetParam(string name1, int number1, string name2, int number2)
         {
             if (number1 <= 0 || number2 <= 0)
             {

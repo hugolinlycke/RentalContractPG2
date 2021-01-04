@@ -17,6 +17,7 @@ namespace ApartmentRentalSystem.Models
             public string NumberOfRooms { get; set; }
             public float Price { get; set; }
             public string SizeOfApartment { get; set; }
+            public string Picture { get; set; }
         
     }
 }
