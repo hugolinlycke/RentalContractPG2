@@ -3,6 +3,7 @@ import sys
 import json
 import requests
 
+
 class PointUnittest(unittest.TestCase):
     deleteId1 = 0
     deleteId2 = 0

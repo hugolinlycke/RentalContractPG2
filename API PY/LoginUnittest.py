@@ -79,7 +79,7 @@ class LoginUnittest(unittest.TestCase):
     def test_delete2_delete_user_fail(self):
         response = requests.delete("http://127.0.0.1:5000/api/delete/user/1")
         assert response.status_code == 418
-
+    
     @classmethod
     def tearDownClass(cls):
         global deleteId2
