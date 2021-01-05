@@ -64,9 +64,6 @@ def fetch_one_user(id):
 @app.route('/api/create/user', methods=['POST'])
 def create_user():
 
-    try: request.json['Id']
-    except KeyError: return error_page(418, "Id not set")
-
     try: request.json['Username']
     except KeyError: return error_page(418, "Username not set")
 
