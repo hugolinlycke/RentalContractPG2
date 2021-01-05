@@ -4,6 +4,7 @@ import json
 import requests
 import RentalService
 
+
 class PointUnittest(unittest.TestCase):
     deleteId1 = 0
     deleteId2 = 0
