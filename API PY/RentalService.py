@@ -5,6 +5,7 @@ import schedule
 import time
 import threading
 
+
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 app.config["JSON_AS_ASCII"] = False
@@ -1010,27 +1011,27 @@ def updatePointTime():
     return "<h1>Updated</h1>"
 
 
-schedule.every().day.at("10:00").do(updatePointTime)
+# schedule.every().day.at("10:00").do(updatePointTime)
 
-def startTimer():
-    while(True):
-        schedule.run_pending()
-        time.sleep(1)
+# def startTimer():
+#     while(True):
+#         schedule.run_pending()
+#         time.sleep(1)
 
 
-class myThread (threading.Thread):
-   def __init__(self, threadID, name, counter):
-      threading.Thread.__init__(self)
-      self.threadID = threadID
-      self.name = name
-      self.counter = counter
-   def run(self):
-        print("THREAD START BEEP BOOP")
-        startTimer()
-        print("THREAD DEAD")
+# class myThread (threading.Thread):
+#    def __init__(self, threadID, name, counter):
+#       threading.Thread.__init__(self)
+#       self.threadID = threadID
+#       self.name = name
+#       self.counter = counter
+#    def run(self):
+#         print("THREAD START BEEP BOOP")
+#         startTimer()
+#         print("THREAD DEAD")
 
-thread1 = myThread(1, "Thread-1", 1)
+# thread1 = myThread(1, "Thread-1", 1)
 
-thread1.start()
+# thread1.start()
 
 app.run()
