@@ -588,7 +588,7 @@ def getSpecificInterest():
 @app.route('/api/create/interest', methods=['POST'])
 def createInterest():
     
-    data = ['Id', 'UserId', 'ApartmentId']
+    data = ['UserId', 'ApartmentId']
 
     for x in data:
         try: request.json[x]
@@ -751,7 +751,7 @@ def getSpecificRental():
 @app.route('/api/create/rental', methods=['POST'])
 def createRental():
     
-    data = ['Id', 'LandlordId', 'ApartmentId', 'UserId']
+    data = ['LandlordId', 'ApartmentId', 'UserId']
 
     for x in data:
         try: request.json[x]
@@ -767,13 +767,18 @@ def createRental():
         userResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(userId)).fetchall()
         landlordResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[User] WHERE Id = " + str(landlordId)).fetchall()
         apartmentResult = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[Apartment] WHERE Id = " + str(apartmentId)).fetchall()
+        if len(apartmentResult) > 0:
 
-        if len(userResult) > 0 and userResult[0].Landlord == False and landlordResult[0].Landlord == True and len(apartmentResult) > 0:
-            cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[RentalOffer] (LandlordId, ApartmentId, UserId) VALUES (" + str(landlordId) + ", " + str(apartmentId) + ", " + str(userId) + ");")
-            conn.commit()
+            if len(userResult) > 0 and len(landlordResult) > 0:
+                if userResult[0].Landlord == False and landlordResult[0].Landlord == True:
+                    cur.execute("INSERT INTO [ApartmentRentalDB].[dbo].[RentalOffer] (LandlordId, ApartmentId, UserId) VALUES (" + str(landlordId) + ", " + str(apartmentId) + ", " + str(userId) + ");")
+                    conn.commit()
+                else:
+                    return error_page(418, "Tenant is not a tenant or landlord is not a landlord")  
+            else:
+                return error_page(418, "Could not find user")
         else:
-            return error_page(418, "User or apartment does not exist")
-        
+            return error_page(418, "Could not find apartment")
         
         results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[RentalOffer] WHERE Id = SCOPE_IDENTITY()").fetchall()
         if len(results) > 0:
@@ -810,11 +815,19 @@ def updateRental():
         
         results = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[RentalOffer] WHERE Id= " + str(Id)).fetchall()
 
-        if len(results) > 0 and userResult[0].Landlord == False and landlordResult[0].Landlord == True and len(apartmentResult) > 0:
-            cur.execute("UPDATE [ApartmentRentalDB].[dbo].[RentalOffer] SET LandlordId= " + str(landlordId) + ", ApartmentId= " + str(apartmentId) + ", UserId= " + str(userId) + " WHERE Id= " + str(Id))
-            conn.commit()
-            results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[RentalOffer] WHERE Id= " + str(Id)).fetchall()
+        if len(results) > 0 and len(apartmentResult) > 0:
             
+            if len(userResult) > 0 and len(landlordResult) > 0:
+                if userResult[0].Landlord == False and landlordResult[0].Landlord == True:
+                    cur.execute("UPDATE [ApartmentRentalDB].[dbo].[RentalOffer] SET LandlordId= " + str(landlordId) + ", ApartmentId= " + str(apartmentId) + ", UserId= " + str(userId) + " WHERE Id= " + str(Id))
+                    conn.commit()
+                    
+                else:
+                    return error_page(418, "Tenant is not a tenant or landlord is not a landlord")  
+            else:
+                return error_page(418, "Could not find user or apartment")
+
+            results1 = cur.execute("SELECT * FROM [ApartmentRentalDB].[dbo].[RentalOffer] WHERE Id= " + str(Id)).fetchall()
             for rental in results1:
                 response = (
                     {'Id': rental.Id,
@@ -825,7 +838,7 @@ def updateRental():
             
             return jsonify(response)
         else:
-            return error_page(418, "Could not find rental offer")
+            return error_page(418, "Could not find rental offer or apartment")
 
     else:
         return error_page(418, "Not all fields are filled out buddy")
