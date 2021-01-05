@@ -2,7 +2,7 @@ import unittest
 import sys
 import json
 import requests
-
+import RentalService
 
 class LoginUnittest(unittest.TestCase):
     deleteId1 = 0
