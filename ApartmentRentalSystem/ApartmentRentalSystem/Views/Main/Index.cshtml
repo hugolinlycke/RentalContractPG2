@@ -98,7 +98,7 @@
     </style>
     @if (ViewBag.Message != null)
     {
-        <script type="text/javascript">
+        <script type="text/javascript"> /* This javaScript is used to have a pop-up message box when something is achived */
 
             window.onload = function () {
                 alert("@ViewBag.Message");
@@ -184,14 +184,9 @@
                     </tr>
                     <tr style="border:2px solid black">
                         <td>@Html.DisplayFor(x => item.Address)</td>
-                        <td>@Html.ActionLink("Go To", "Apartment", "Main", 
+                        <td>@Html.ActionLink("Go To", "ApartmentAsync", "Main", 
                            new { 
-                               Id = item.Id, 
-                               NumberOFRooms = item.NumberOfRooms,
-                               Price = item.Price,
-                               Location = item.Location,
-                               SizeOFApartment = item.SizeOfApartment,
-                               Address = item.Address
+                               Id = item.Id 
                                }, null)</td>
                     </tr>
                 </table>
@@ -217,12 +212,7 @@
         </div>
     </div>
 
-    @*<div id="icons">
-        <a rel="nofollow" target="_blank" href="http://www.facebook.com"><img class="picture" src="~/Image/facebook.png" width="40px"></a>
-        <a rel="nofollow" target="_blank" href="http://www.instagram.com"><img class="picture" src="~/Image/instagram.png" width="40px"></a>
-        <a rel="nofollow" target="_blank" href="http://www.youtube.com"><img class="picture" src="~/Image/youtube.png" width="40px"></a>
-        <a rel="nofollow" target="_blank" href="http://www.twitter.com"><img class="picture" src="~/Image/twitter.png" width="40px"></a>
-    </div>*@
+    
 
 </body>
 </html>

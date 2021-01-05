@@ -163,6 +163,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Apartment.cs" />
+    <Compile Include="Models\Interest.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -211,7 +212,7 @@
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Login\CreateAccount.cshtml" />
     <Content Include="Views\Main\Index.cshtml" />
-    <Content Include="Views\Main\Apartment.cshtml" />
+    <Content Include="Views\Main\ApartmentAsync.cshtml" />
     <Content Include="Views\Main\ProfilePage.cshtml" />
   </ItemGroup>
   <ItemGroup>

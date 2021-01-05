@@ -31,19 +31,18 @@ namespace ApartmentRentalSystem.Controllers
             {
                 var content = await response.Content.ReadAsStringAsync();
 
-                List<Apartment> listOfApartment = JsonConvert.DeserializeObject<List<Apartment>>(content);
+                List<Apartment> listOfApartment = JsonConvert.DeserializeObject<List<Apartment>>(content); // Every item we get from the api we put into a list and later display this list in th view
 
                 if (listOfApartment != null)
                 {
                     if (Session["User"] != null)
                     {
-                        // 
+                        // A Session for user crediential
                     }
                     if (TempData["SuccessfullLogin"] != null)
                     {
                         ViewBag.Message = TempData["SuccessfullLogin"].ToString();
                     }
-                    // nu skall vi foreach:a varje item i html för att kunna skapa en data-view
                     return View(listOfApartment);
                 }
                 else
@@ -58,20 +57,11 @@ namespace ApartmentRentalSystem.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<ActionResult> Index(int Maxprice = 0, int Minprice = 0, string location = null, int room = 0)
+        public async Task<ActionResult> Index(int Maxprice = 0, int Minprice = 0, string location = null, int room = 0) //This method runs When searching for a filtered apartment
         {
-            //Om alla värde är null så kommer en error. Behöver fixas
-            //Lägga till fler if satser
 
-
-            string URL = BASE_URL + "api/read/apartment/filter?" + GetParam("minprice", Minprice, "maxprice", Maxprice) + GetParam("location", location) + GetParam("rooms", room);
-            //string URL = BASE_URL + "api/read/apartment/filter?" + GetParam("minprice", Minprice) + GetParam("maxprice", Maxprice) + GetParam("location", location) + GetParam("rooms", room);
-
+            string URL = BASE_URL + "api/read/apartment/filter?" + GetParam("minprice", Minprice, "maxprice", Maxprice) + GetParam("location", location) + GetParam("rooms", room); //Calls 3 diffrent functions to build up the api based on the inputs given in the seachbar
             URL = URL.TrimEnd('&');
-
-            
-
-
 
             HttpClient http = new HttpClient();
             HttpResponseMessage response = await http.GetAsync(new Uri(URL));
@@ -88,12 +78,11 @@ namespace ApartmentRentalSystem.Controllers
                     {
                         ViewBag.Message = TempData["ApartmentRequirmentsSearch"].ToString();
                     }
-                    // nu skall vi foreach:a varje item i html för att kunna skapa en data-view
                     return View(listOfApartment);
                 }
                 else
                 {
-                    // LISTAN ÄR TOM
+                    // IF the list is emtpy
                 }
 
             }
@@ -115,7 +104,7 @@ namespace ApartmentRentalSystem.Controllers
 
             return View();
         }
-        public string GetParam(string name, int number)
+        public string GetParam(string name, int number) // Function that checks the "Room" input from the search of apartments
         {
             if (number <= 0)
             {
@@ -131,7 +120,7 @@ namespace ApartmentRentalSystem.Controllers
                 return name + "=" + number+ "&";
             }
         }
-        public string GetParam(string name, string text)
+        public string GetParam(string name, string text) // Function that checks the "Location" input from the search of apartments
         {
             if (text == null || text=="")
             {
@@ -142,7 +131,7 @@ namespace ApartmentRentalSystem.Controllers
                 return name + "=" + text + "&";
             }
         }
-        public string GetParam(string name1, int number1, string name2, int number2)
+        public string GetParam(string name1, int number1, string name2, int number2) // Function that checks the "Minprice" and "Maxprice" input from the search of apartments
         {
             if (number1 <= 0 || number2 <= 0)
             {
@@ -165,13 +154,45 @@ namespace ApartmentRentalSystem.Controllers
         }
 
 
-        public ActionResult Apartment()
+        public async Task<ActionResult> ApartmentAsync(int id)
         {
+            if (id != 0)
+            {
+                string URL = BASE_URL + "api/read/apartment?active=true&id=" + id;
+                HttpClient http = new HttpClient();
+                HttpResponseMessage response = await http.GetAsync(new Uri(URL));
 
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    List<Apartment> listOfApartment = JsonConvert.DeserializeObject<List<Apartment>>(content);
+
+                    return View(listOfApartment);
+                }
+            }
             return View();
         }
-        
-        public ActionResult ProfilePage()
+        [HttpPost]
+        public async Task<ActionResult> ApartmentAsync(int Apartmentid, int LandlordId) //This funktions isn't done. Used to entere the interest queue as the user.
+        {
+            if (Apartmentid != 0)
+            {
+                string URL = BASE_URL + "api/create/interest?ApartmentId=" + Apartmentid + "&UserId=" + 1;
+                HttpClient http = new HttpClient();
+                HttpResponseMessage response = await http.GetAsync(new Uri(URL));
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    List<Interest> listOfInterest = JsonConvert.DeserializeObject<List<Interest>>(content);
+
+                    return View(listOfInterest);
+                }
+            }
+            return View();
+        }
+
+        public ActionResult ProfilePage() // this function isn't done
         {
             return View();
         }

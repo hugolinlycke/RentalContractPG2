@@ -1,0 +1,96 @@
+﻿@model IEnumerable<ApartmentRentalSystem.Models.Apartment>
+<html lang="en">
+
+<head>
+    <style>
+        body {
+            margin: 0px;
+        }
+
+        #left {
+            width: 50%;
+            height: 100%;
+            float: left;
+        }
+
+        #right {
+            float: left;
+            height: 100%;
+            width: 50%;
+        }
+
+        #top {
+            margin-top: 50px;
+            width: 100%;
+            height: 75%;
+        }
+
+        #apartements {
+            width: 100%;
+            height: 150px;
+        }
+
+        #footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 500px;
+            width: 100%;
+            background-color: red;
+        }
+    </style>
+    <meta charset="ascii">
+    <meta name="viewport" content="initial-scale=1.0">
+</head>
+<body style=" margin:0px; background-color:lightblue;">
+    <div id="top">
+        <div id="left">
+            @foreach (var item in Model)
+            {
+                <img src="@Url.Content(item.Picture)" style="margin-left: 40%; width:300px; height: 300px" />
+            }
+                <table style="margin-top:150px; margin-bottom:150px;" cellpadding="10px">
+                    <tr>
+                        @foreach (var item in Model)
+                        {
+                            <td><img src="@Url.Content(item.Picture)" style="border-radius:300px; width:150px; height:150px; align:middle;" /></td>
+                        }
+                            <td>
+                                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
+                                labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
+                                et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                            </td>
+                        </tr>
+                </table>
+            </div>
+        <div id="right">
+            @foreach (var item in Model)
+            {
+                <p>Location: @Html.DisplayFor(x => item.Location)</p>
+                <p>Rooms: @Html.DisplayFor(x => item.NumberOfRooms)</p>
+                <p>Size: @Html.DisplayFor(x => item.SizeOfApartment)</p>
+                <p>Price: @Html.DisplayFor(x => item.Price)</p>
+                <p style="margin-top:252px; margin-bottom:100px;">
+                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
+                    labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
+                    et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
+                    labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
+                    et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                </p>
+            }
+            </div>
+    </div>
+
+
+    <div id="apartements" style=" height:150px">
+        @using (Html.BeginForm())
+        {
+            <input type="submit" value="Enter Interest queue" style="margin-left:47%; margin-top:20px;">
+        }
+    </div>
+
+    <div id="footer" style=" height:150px">
+    </div>
+</body>
+</html>

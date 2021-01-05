@@ -26,7 +26,7 @@ namespace ApartmentRentalSystem.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<ActionResult> Index(User inloggning)
+        public async Task<ActionResult> Index(User inloggning) // Checking the Login function. 
         {
 
             string URL = BASE_URL + "api/login?username=" + inloggning.Username + "&password=" + inloggning.Password;
@@ -64,11 +64,7 @@ namespace ApartmentRentalSystem.Controllers
                     ViewBag.Message = String.Format("You have entered wrong user credentials, Please try again", DateTime.Now.ToString());
                     return View();
                 }
-                
             }
-            
-
-            // Here functionall Code. What will happen when we get answers.
             return View();
         }
         public ActionResult CreateAccount() 
@@ -76,7 +72,7 @@ namespace ApartmentRentalSystem.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<ActionResult> CreateAccount(User inloggning)
+        public async Task<ActionResult> CreateAccount(User inloggning) // When you create an account this function runs
         {
 
             if (inloggning.Username == null || inloggning.Password == null)
