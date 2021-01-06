@@ -2,7 +2,7 @@ import unittest
 import sys
 import json
 import requests
-
+import RentalService
 
 class LoginUnittest(unittest.TestCase):
     deleteId1 = 0
@@ -57,7 +57,7 @@ class LoginUnittest(unittest.TestCase):
         assert response.status_code == 418
     
     def test_read1_read_all_users(self):
-        response = requests.get("http://127.0.0.1:5000/api/read/user")
+        response = requests.get("http://127.0.0.1:5000/api/read/users")
         assert response.status_code == 200
 
     def test_read2_read_specific_user(self):
@@ -79,7 +79,7 @@ class LoginUnittest(unittest.TestCase):
     def test_delete2_delete_user_fail(self):
         response = requests.delete("http://127.0.0.1:5000/api/delete/user/1")
         assert response.status_code == 418
-
+    
     @classmethod
     def tearDownClass(cls):
         global deleteId2
